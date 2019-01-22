@@ -176,142 +176,89 @@ $$
 
 \section{实例}
 
-已知某序列的形式幂级数为 $F(x)=\frac{1-x-\sqrt{1-6x^+x^2}}{2x}$，求其线性递推式
+\subsection{Large Schröder numbers}
 
-考虑到 $1-x$ 和 $2x$ 只是移动了系数，所以相当于求 $H(x)=\sqrt{1-6x+x^2}$ 的形式幂级数
+已知 \textbf{Large Schröder numbers} 的形式幂级数为 $F(x)=\frac{1-x-\sqrt{1-6x^+x^2}}{2x}$，求其线性递推式
 
-为了方便求解，设 $G(x)=\frac{1}{H(x)}$
+设 $G(x)=\sqrt{1-6x+x^2}$
 
-\subsection{求 $G(x)$}
-
-因为：
-
-$$
-\begin{aligned}
-    &(x-3)G(x)=-(1-6x+x^2)G ^\prime (x) \\
-    \Rightarrow &(x-3)\sum_{n=0}^{\infty}g_nx^n=(-1+6x-x^2)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n \\
-    \Rightarrow &\sum_{n=1}^{\infty}g_{n-1}x^n-\sum_{n=0}^{\infty}3g_nx^n=-\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n+\sum_{n=1}^{\infty}6g_{n}nx^n-\sum_{n=2}^{\infty}g_{n-1}(n-1)x^n
-\end{aligned}
-$$
-
-那么有：
-
-\subsubsection{初值}
-
-$$
-g_0=G(0)=1
-$$
-
-\subsubsection{当 $n=0$ 时}
-
-$$
-\begin{aligned}
-    &-3g_0=-g_{0+1}(0+1) \\
-    \Rightarrow & -3g_0=-g_1 \\
-    \Rightarrow & g_1=3
-\end{aligned}
-$$
-
-\subsubsection{当 $n=1$ 时}
-
-$$
-\begin{aligned}
-    &g_{1-1}x-3g_1x =-g_{1+1}(1+1)x+6g_11x-g_{1-1}(1-1)x\\
-    \Rightarrow & g_0-3g_1=-2g_2+6g_1 \\
-    \Rightarrow & 1-9=-2g_2+18 \\
-    \Rightarrow & g_2=13
-\end{aligned}
-$$
-
-\subsubsection{当 $n \ge 2$ 时}
-
-$$
-\begin{aligned}
-    & \left(g_{n-1}-3g_n\right)x^n=\left(-g_{n+1}(n+1)+6g_nn-g_{n-1}(n-1) \right)x^n & \quad (n \ge 2) \\
-    \Rightarrow &g_{n-1}-3g_n=-g_{n+1}(n+1)+6g_nn-g_{n-1}(n-1) & \quad (n \ge 2) \\
-    \Rightarrow &g_{n-1}n-(3+6n)g_nn+g_{n+1}(n+1)=0 & \quad (n \ge 2) \\
-    \Rightarrow &g_{n+1}(n+1)=(3+6n)g_{n}-g_{n-1}n & \quad (n \ge 2) \\
-    \Rightarrow &g_{n}=\frac{(3+6(n-1))g_{n-1}-g_{n-2}(n-1)}{n} & \quad (n \ge 3)
-\end{aligned}
-$$
-
-\subsection{求 $H(x)$}
+\subsubsection{求 $G(x)$}
 
 因为：
+
+$$
+\begin{aligned}
+&(1-6x+x^2)G'(x)=\frac{1}{2}G(x)(1-6x+x^2)' \\
+\Rightarrow &(1-6x+x^2)G'(x)=G(x)(x-3) \\
+\Rightarrow &\sum_{n=0}^{\infty}g_{n+1}(n+1)x^{n}-\sum_{n=1}^{\infty}6g_{n}nx^n+\sum_{n=2}^{\infty}g_{n-1}(n-1)x^n=\sum_{n=1}^{\infty}g_{n-1}x^n-\sum_{n=0}^{\infty} 3g_nx^n
+\end{aligned}
+$$
+
+于是有：
 
 $$
 \begin{cases}
-    h_0=H(0)=1 \\
-    \sum_{n=0}^{\infty}2h_{n+1}(n+1)x^n=(2x-6)\sum_{n=0}^{\infty}g_nx^n=\sum_{n=1}^{\infty}2g_{n-1}x^n-\sum_{n=0}^{\infty}6g_nx^n
+g_0=G(0)=1 \\
+g_{0+1}(0+1)=-3g_0 \\
+g_{1+1}(1+1)-6g_11=g_{1-1}-3g_1 \\
+g_{n+1}(n+1)-6g_nn+g_{n-1}(n-1)=g_{n-1}-3g_n \quad (n \ge 2)
 \end{cases}
 $$
 
-那么有：
+那么：
 
-\subsubsection{初值}
+\textbf{初值}
 
 $$
 \begin{cases}
-    h_0=1 \\
-    2h_{0+1}(0+1)=-6g_0 \Rightarrow 2h_1=-6 \Rightarrow h_1=-3
+g_0=1 \\
+g_1=-3g_0=-3 \\
+2g_2-6g_1=g_0-3g_1 \Rightarrow g_2=-4
 \end{cases}
 $$
 
-\subsubsection{当 $n \ge 1$ 时}
+\textbf{其它情况}
 
 $$
 \begin{aligned}
-    &2h_{n+1}(n+1)=2g_{n-1}-6g_n \quad & (n \ge 1)\\
-    \Rightarrow &h_n=\frac{g_{n-2}-3g_{n-1}}{n}  \quad & (n \ge 2)
+&g_{n+1}(n+1)+(3-6n)g_n+g_{n-1}(n-2)=0 \quad & (n \ge 2) \\
+\Rightarrow &g_{n+1}=\frac{(6n-3)g_n+g_{n-1}(2-n)}{n+1} \quad & (n \ge 2) \\
+\Rightarrow &g_{n}=\frac{(6n-9)g_{n-1}+(3-n)g_{n-2}}{n} \quad & (n \ge 1)
 \end{aligned}
 $$
 
-\subsection{求 $F(x)$}
+\subsubsection{求 $F(x)$}
 
-因为：
+因为 $2xF(x)=1-x-G(x)$，则有：
+
+$$
+\sum_{n=1}^{\infty}2f_{n-1}x^n=1-x-g_0-g_1x-\sum_{n=2}^{\infty}g_nx^n
+$$
+
+那么：
+
+\textbf{初值}
+
+$$
+2f_{1-1}=-1-g_1 \Rightarrow f_0=1
+$$
+
+\textbf{其它情况}
 
 $$
 \begin{aligned}
-    &2xF(x)=1-x-H(x) \\
-    \Rightarrow &2x\sum_{n=0}^{\infty}f_nx^n=1-x-\sum_{n=0}^{\infty}h_nx^n \\
-    \Rightarrow &\sum_{n=1}^{\infty} 2f_{n-1}x^{n}=(1-h_0)-(h_1+1)x-\sum_{n=2}^{\infty}h_nx^n
+&2f_{n-1}=-g_n \quad &(n \ge 2) \\
+\Rightarrow &f_{n}=-\frac{g_{n+1}}{2} \quad & (n \ge 1)
 \end{aligned}
 $$
 
-那么有：
+\subsection{Motzkin numbers}
 
-\subsubsection{初值}
+已知 \textbf{Motzkin numbers} 的形式幂级数为 $F(x)=\frac{1-x-\sqrt{1-2x-3x^2}}{2x^2}$，求其线性递推式
 
-$$
-\begin{aligned}
-    &2f_0x=-(h_1+1)x \\
-    \Rightarrow & f_0=1
-\end{aligned}
-$$
+\subsection{Catalan numbers}
 
-\subsubsection{当 $n \ge 2$ 时}
-
-$$
-\begin{aligned}
-    &2f_{n-1}x^n=-h_nx^n & \quad (n \ge 2) \\
-    \Rightarrow & 2f_{n-1}=-h_n & \quad (n \ge 2) \\
-    \Rightarrow & f_{n}=-\frac{h_{n+1}}{2}  & \quad (n \ge 1)
-\end{aligned}
-$$
-
-\section{其它例子}
-
-\subsection{默慈金数}
-
-$$
-F(x)=\frac{1-x-\sqrt{1-2x-3x^2}}{2x^2}
-$$
-
-\subsection{卡特兰数}
-
-$$
-F(x)=\frac{1-\sqrt{1-4x}}{2}
-$$
+已知 \textbf{Catalan numbers} 的形式幂级数为 $F(x)=\frac{1-\sqrt{1-4x}}{2x}$，求其线性递推式
 
 \begin{thebibliography}{}
     \bibitem[1]{REF1}\href{https://zhuanlan.zhihu.com/p/31457805}{生成函数及应用}, ACdreamer

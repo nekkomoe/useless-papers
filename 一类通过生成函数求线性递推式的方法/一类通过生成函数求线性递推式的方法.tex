@@ -1,0 +1,321 @@
+%!TEX program = xelatex
+
+\documentclass[UTF8]{article}
+\author {sjzez czy}
+\title {一类通过生成函数求线性递推式的方法}
+\date{2019.1.22}
+\usepackage[UTF8]{ctex}
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{abstract}
+\usepackage{graphicx}
+
+% \setmonofont{Consolas}
+
+\usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
+\renewcommand{\baselinestretch}{1.5}
+\geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
+
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    在一类低阶卷积递推中，常用方法是多项式开根来优化递推，但在某些特殊情况下，可以实现线性递推来求解，使得时间复杂度变为线性
+    \newline
+    \centering
+    \textbf{关键字：} 卷积、形式幂级数、生成函数、多项式开根
+\end{abstract}
+
+\newpage
+\tableofcontents
+
+\newpage
+
+\section{定义}
+
+\subsection{卷积}
+
+对于一个矩阵 $\{a_{n,m}\}$，定义其 $n$ 阶卷积 $\{c_k\}$ 为：
+
+$$
+c_k=\sum_{\sum_{j=1}^{n}p_j=k}\prod_{i=1}^{n} a_{i,p_i}
+$$
+
+\subsection{卷积递推}
+
+定义一个序列 $\{f_k\}$ 是关于 $g_k,h_k,\{a_{u,v}\}$ 的 $u$ 阶卷积递推，意味着：
+
+$$
+f_k=g_k+h_k\sum_{\sum_{j=1}^{u}p_j=k}\prod_{i=1}^{u}a_{i,p_i}
+$$
+
+\subsection{形式幂级数}
+
+对于一个序列 $\{a_n\}$，定义它的形式幂级数 $A(x)$ 为：
+
+$$
+A(x)=\sum_{n=0}^{\infty}a_nx^n
+$$
+
+在这里，并不关注 $x$ 的取值，只是用它的一个形式，但如果将其转化为封闭形式后，需要保证 $a_0=A(0)$ 成立
+
+在本文中，不加区分形式幂级数与生成函数的区别，形式幂级数拥有一些常见的算术运算方式
+
+\subsubsection{相等}
+
+定义 $A(x)=B(x)$，意味着：
+
+$$
+\forall n \ge 0,a_n=b_n
+$$
+
+\subsubsection{加法}
+
+定义 $C(x)=A(x)+B(x)$，意味着：
+
+$$
+\sum_{n=0}^{\infty}c_nx^n=\sum_{n=0}^{\infty}(a_n+b_n)x^n
+$$
+
+\subsubsection{乘法}
+
+定义 $C(x)=A(x) \times B(x)$，意味着：
+
+$$
+\sum_{n=0}^{\infty}c_nx^n=\sum_{n=0}^{\infty}x^n \sum_{i+j=n} a_i \times b_j
+$$
+
+\section{引理}
+
+\subsection{形式幂级数的导数}
+
+由于 $x^n$ 的导数为 $nx^{n-1}$，由此可得对于形式幂级数 $A(x)$ 来说，它的导数为：
+
+$$
+A ^\prime (x)=\sum_{n=0}^{\infty} a_{n+1}(n+1)x^n
+$$
+
+于是可以推出如下结论：
+
+$$
+\begin{aligned}
+    & F(x)=A(x)^{p} \\
+    \Rightarrow & F ^\prime (x)=pA(x)^{p-1}A ^\prime (x) \\
+    \Rightarrow & A(x)F ^\prime (x)=pA(x)^pA ^\prime (x) \\
+    \Rightarrow & A(x)F ^\prime (x)=pF(x)A ^\prime (x)
+\end{aligned}
+$$
+
+同时可以得知，如果已知 $F(0)$ 和 $F ^\prime (x)$，可以还原出 $F(x)$
+
+\subsection{形式幂级数的二次卷积}
+
+考虑形如如下的一类递推：
+
+$$
+f_k=g_k+h_k\sum_{i+j=k}f_if_j
+$$
+
+在进行一些整理后，它们的形式幂级数可以写作：
+
+$$
+A(x)F^2(x)+B(x)F(x)+C(x)=0
+$$
+
+若其为二次方程，则通过二次方程求根公式，可以得到：
+
+$$
+F(x)=\frac{-B(x) \pm \sqrt{B^2(x)-4A(x)C(x)}}{2A(x)}
+$$
+
+在确定完正负号后，可以化作：
+
+$$
+2A(x)F(x)=-B(x) \pm \sqrt{B^2(x)-4A(x)C(x)}
+$$
+
+因此只需要考虑一类形如 $\sqrt{A(x)}$ 的生成函数即可
+
+当 $A(x),B(x),C(x)$ 均为低阶多项式时，可以进行一些化简后，得到 $\{f_n\}$ 的线性递推式
+
+设 $F(x)=\sqrt{A(x)}$，则有：
+
+$$
+\begin{cases}
+    F ^\prime (x)=\frac{A ^\prime (x)}{2\sqrt{A(x)}}=\frac{A ^\prime (x)}{2} G(x) \\
+    G ^\prime (x)=\left(\frac{1}{\sqrt{A(x)}}\right) ^\prime =-\frac{A ^\prime (x)}{2A(x)}G(x)
+\end{cases}
+$$
+
+即：
+
+$$
+\begin{cases}
+    A ^\prime (x)G(x)=-2G ^\prime (x)A(x) \\
+    2F ^\prime (x)=A ^\prime (x)G(x)
+\end{cases}
+$$
+
+展开后可以得到：
+
+$$
+\begin{cases}
+    A ^\prime (x)\sum_{n=0}^{\infty}g_nx^n=-2A(x)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n \\
+    \sum_{n=0}^{\infty}2f_{n+1}(n+1)x^n=A ^\prime (x)\sum_{n=0}^{\infty}g_nx^n
+\end{cases}
+$$
+
+在依次进行线性递推后，可以得到 $\{f_n\}$
+
+\section{实例}
+
+已知某序列的形式幂级数为 $F(x)=\frac{1-x-\sqrt{1-6x^+x^2}}{2x}$，求其线性递推式
+
+考虑到 $1-x$ 和 $2x$ 只是移动了系数，所以相当于求 $H(x)=\sqrt{1-6x+x^2}$ 的形式幂级数
+
+为了方便求解，设 $G(x)=\frac{1}{H(x)}$
+
+\subsection{求 $G(x)$}
+
+因为：
+
+$$
+\begin{aligned}
+    &(x-3)G(x)=-(1-6x+x^2)G ^\prime (x) \\
+    \Rightarrow &(x-3)\sum_{n=0}^{\infty}g_nx^n=(-1+6x-x^2)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n \\
+    \Rightarrow &\sum_{n=1}^{\infty}g_{n-1}x^n-\sum_{n=0}^{\infty}3g_nx^n=-\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n+\sum_{n=1}^{\infty}6g_{n}nx^n-\sum_{n=2}^{\infty}g_{n-1}(n-1)x^n
+\end{aligned}
+$$
+
+那么有：
+
+\subsubsection{初值}
+
+$$
+g_0=G(0)=1
+$$
+
+\subsubsection{当 $n=0$ 时}
+
+$$
+\begin{aligned}
+    &-3g_0=-g_{0+1}(0+1) \\
+    \Rightarrow & -3g_0=-g_1 \\
+    \Rightarrow & g_1=3
+\end{aligned}
+$$
+
+\subsubsection{当 $n=1$ 时}
+
+$$
+\begin{aligned}
+    &g_{1-1}x-3g_1x =-g_{1+1}(1+1)x+6g_11x-g_{1-1}(1-1)x\\
+    \Rightarrow & g_0-3g_1=-2g_2+6g_1 \\
+    \Rightarrow & 1-9=-2g_2+18 \\
+    \Rightarrow & g_2=13
+\end{aligned}
+$$
+
+\subsubsection{当 $n \ge 2$ 时}
+
+$$
+\begin{aligned}
+    & \left(g_{n-1}-3g_n\right)x^n=\left(-g_{n+1}(n+1)+6g_nn-g_{n-1}(n-1) \right)x^n & \quad (n \ge 2) \\
+    \Rightarrow &g_{n-1}-3g_n=-g_{n+1}(n+1)+6g_nn-g_{n-1}(n-1) & \quad (n \ge 2) \\
+    \Rightarrow &g_{n-1}n-(3+6n)g_nn+g_{n+1}(n+1)=0 & \quad (n \ge 2) \\
+    \Rightarrow &g_{n+1}(n+1)=(3+6n)g_{n}-g_{n-1}n & \quad (n \ge 2) \\
+    \Rightarrow &g_{n}=\frac{(3+6(n-1))g_{n-1}-g_{n-2}(n-1)}{n} & \quad (n \ge 3)
+\end{aligned}
+$$
+
+\subsection{求 $H(x)$}
+
+因为：
+
+$$
+\begin{cases}
+    h_0=H(0)=1 \\
+    \sum_{n=0}^{\infty}2h_{n+1}(n+1)x^n=(2x-6)\sum_{n=0}^{\infty}g_nx^n=\sum_{n=1}^{\infty}2g_{n-1}x^n-\sum_{n=0}^{\infty}6g_nx^n
+\end{cases}
+$$
+
+那么有：
+
+\subsubsection{初值}
+
+$$
+\begin{cases}
+    h_0=1 \\
+    2h_{0+1}(0+1)=-6g_0 \Rightarrow 2h_1=-6 \Rightarrow h_1=-3
+\end{cases}
+$$
+
+\subsubsection{当 $n \ge 1$ 时}
+
+$$
+\begin{aligned}
+    &2h_{n+1}(n+1)=2g_{n-1}-6g_n \quad & (n \ge 1)\\
+    \Rightarrow &h_n=\frac{g_{n-2}-3g_{n-1}}{n}  \quad & (n \ge 2)
+\end{aligned}
+$$
+
+\subsection{求 $F(x)$}
+
+因为：
+
+$$
+\begin{aligned}
+    &2xF(x)=1-x-H(x) \\
+    \Rightarrow &2x\sum_{n=0}^{\infty}f_nx^n=1-x-\sum_{n=0}^{\infty}h_nx^n \\
+    \Rightarrow &\sum_{n=1}^{\infty} 2f_{n-1}x^{n}=(1-h_0)-(h_1+1)x-\sum_{n=2}^{\infty}h_nx^n
+\end{aligned}
+$$
+
+那么有：
+
+\subsubsection{初值}
+
+$$
+\begin{aligned}
+    &2f_0x=-(h_1+1)x \\
+    \Rightarrow & f_0=1
+\end{aligned}
+$$
+
+\subsubsection{当 $n \ge 2$ 时}
+
+$$
+\begin{aligned}
+    &2f_{n-1}x^n=-h_nx^n & \quad (n \ge 2) \\
+    \Rightarrow & 2f_{n-1}=-h_n & \quad (n \ge 2) \\
+    \Rightarrow & f_{n}=-\frac{h_{n+1}}{2}  & \quad (n \ge 1)
+\end{aligned}
+$$
+
+\section{其它例子}
+
+\subsection{默慈金数}
+
+$$
+F(x)=\frac{1-x-\sqrt{1-2x-3x^2}}{2x^2}
+$$
+
+\subsection{卡特兰数}
+
+$$
+F(x)=\frac{1-\sqrt{1-4x}}{2}
+$$
+
+\begin{thebibliography}{}
+    \bibitem[1]{REF1}\href{https://zhuanlan.zhihu.com/p/31457805}{生成函数及应用}, ACdreamer
+    \bibitem[2]{REF2}\href{https://zhuanlan.zhihu.com/p/54318231}{迷思：寻找母函数运算的组合意义（一）}, EntropyIncreaser
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,149 @@
+%!TEX program = xelatex
+
+\documentclass[UTF8]{article}
+\author {sjzez czy}
+\title {分治乘法}
+\date{2019.1.23}
+\usepackage[UTF8]{ctex}
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{abstract}
+\usepackage{graphicx}
+\setmonofont{Consolas}
+\usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
+\renewcommand{\baselinestretch}{1.5}
+\geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
+
+\usepackage{xcolor}
+% 定义可能使用到的颜色
+\definecolor{CPPLight}  {HTML} {686868}
+\definecolor{CPPSteel}  {HTML} {888888}
+\definecolor{CPPDark}   {HTML} {262626}
+\definecolor{CPPBlue}   {HTML} {4172A3}
+\definecolor{CPPGreen}  {HTML} {487818}
+\definecolor{CPPBrown}  {HTML} {A07040}
+\definecolor{CPPRed}    {HTML} {AD4D3A}
+\definecolor{CPPViolet} {HTML} {7040A0}
+\definecolor{CPPGray}  {HTML} {B8B8B8}
+\lstset{
+    columns=fixed,
+    numbers=left,                                        % 在左侧显示行号
+    frame=none,                                          % 不显示背景边框
+    backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+    keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+    numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+    commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+    stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+    showstringspaces=false,                              % 不显示字符串中的空格
+    language=c++,                                        % 设置语言
+    morekeywords={alignas,continute,friend,register,true,alignof,decltype,goto,
+    reinterpret_cast,try,asm,defult,if,return,typedef,auto,delete,inline,short,
+    typeid,bool,do,int,signed,typename,break,double,long,sizeof,union,case,
+    dynamic_cast,mutable,static,unsigned,catch,else,namespace,static_assert,using,
+    char,enum,new,static_cast,virtual,char16_t,char32_t,explict,noexcept,struct,
+    void,export,nullptr,switch,volatile,class,extern,operator,template,wchar_t,
+    const,false,private,this,while,constexpr,float,protected,thread_local,
+    const_cast,for,public,throw,std},
+}
+
+
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+    \section{原理}
+
+    设 $A(x)=\sum_{i=0}^{n-1}a_ix^i,B(x)=\sum_{i=0}^{n-1}b_ix^i$，且 $n=2^k$
+
+    将 $A(x),B(x)$ 分别拆成前后部分，即：
+
+    $$
+    \begin{cases}
+    A(x)=A_0(x)+x^{\frac{n}{2}}A_1(x) \\
+    B(x)=B_0(x)+x^{\frac{n}{2}}B_1(x)
+    \end{cases}
+    $$
+
+    则有：
+
+    $$
+    \begin{aligned}
+    A(x)B(x)=&\left(A_0(x)+x^{\frac{n}{2}}A_1(x)\right)\left(B_0(x)+x^{\frac{n}{2}}B_1(x)\right) \\
+             &A_0B_1+x^nA_1B_1+x^{\frac{n}{2}}\left(A_0B_1+A_1B_0\right) \\
+             &A_0B_1+x^nA_1B_1+x^{\frac{n}{2}}\left( \left( A_0-A_1 \right) \left( B_1-B_0 \right) + A_1B_1 + A_0B_0  \right) \\
+    \end{aligned}
+    $$
+
+    于是原先的四次乘法就变成了三次乘法
+
+    \section{时间复杂度}
+
+    $$
+    T(n)=O(n)+3T(\frac{n}{2})=O(n^{\log_2 3})=O(n^{1.59})
+    $$
+
+    \section{空间复杂度}
+
+    $$
+    O(n)
+    $$
+
+    \section{代码实现}
+
+
+\begin{lstlisting}
+ll a[N], b[N], c[N], mem[N], top;
+inline void mns(ll *a, ll *b, ll *res, int n) {
+    for(int i = 0 ; i < n ; ++ i) res[i] = (a[i] - b[i]) % mod;
+}
+inline void pls(ll *a, ll *b, ll *c, ll *res, int n) {
+    for(int i = 0 ; i < n ; ++ i) res[i] = (a[i] + b[i] + c[i]) % mod;
+}
+ll *_new(int x) {
+    ll *res = mem + top;
+    top += x;
+    assert(top < N);
+    return res;
+}
+void _delete(int x) {
+    top -= x;
+}
+void sol(ll *a, ll *b, ll *res, int n) {
+    if(n == 1) {
+        res[0] = a[0] * b[0] % mod;
+        res[1] = 0;
+    } else if(n > 1) {
+        ll *a0b0 = _new(n), *a1b1 = _new(n);
+        ll *a0a1 = _new(n), *b1b0 = _new(n);
+        ll *a0a1_b1b0 = _new(n);
+        sol(a, b, a0b0, n / 2);
+        sol(a + n / 2, b + n / 2, a1b1, n / 2);
+        mns(a, a + n / 2, a0a1, n / 2);
+        mns(b + n / 2, b, b1b0, n / 2);
+        sol(a0a1, b1b0, a0a1_b1b0, n / 2);
+        for(int i = 0 ; i < n ; ++ i) {
+            res[i] = a0b0[i];
+            res[i + n] = a1b1[i];
+        }
+        pls(a0a1_b1b0, a1b1, a0b0, a0a1_b1b0, n);
+        for(int i = 0 ; i < n ; ++ i) {
+            (res[i + n / 2] += a0a1_b1b0[i]) %= mod;
+        }
+        _delete(n * 5);
+    }
+}
+\end{lstlisting}
+
+\end{document}
+

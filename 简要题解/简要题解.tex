@@ -1,9 +1,9 @@
 %!TEX program = xelatex
 
 \documentclass[UTF8]{article}
-    \author {作者}
-    \title {标题}
-    \date{时间}
+\author {sjzez czy}
+\title {简要题解}
+\date{2019.1.23}
 \usepackage[UTF8]{ctex}
 \usepackage{listings}
 \usepackage{fontspec}
@@ -15,6 +15,7 @@
 \usepackage{abstract}
 \usepackage{graphicx}
 \setmonofont{Consolas}
+\usepackage{verbatim}
 \usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
 \renewcommand{\baselinestretch}{1.5}
 \geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
@@ -23,13 +24,135 @@
 
 \begin{document}
 
-    \maketitle
+\maketitle
 
-    \tableofcontents
+\tableofcontents
 
-    \newpage
+\newpage
 
+%%% 模板
+\iffalse 
+\section{\href{https://lydsy.com}{题目名称}}
+\subsection{题目大意}
+\subsection{算法讨论}
+\subsection{时间复杂度}
+\subsection{空间复杂度}
+\fi
 
+\section{\href{https://www.51nod.com/Challenge/Problem.html?problemId=1172}{【51nod 1172】Partial Sums V2}}
+
+\subsection{题目大意}
+
+给定一个序列（长度不超过 $50000$），求做 $k(k \le 10^9)$ 次前缀和后的序列结果，序列的每个元素对 $10^9+7$ 取模
+
+\subsection{算法讨论}
+
+对于形式幂级数 $A(x)$，以及实数 $p$ 来说，有下式成立：
+
+$$
+F(x)=A(x)^p \Rightarrow A(x)F'(x)=pF(x)A'(x)
+$$
+
+对于一个序列 $\{a_n\}$ 来说，求一次前缀和相当于把 $A(x)$ 变为 $\frac{A(x)}{1-x}$
+
+若做 $k$ 次前缀和，相当于乘上 $\frac{1}{(1-x)^k}$，由于乘法具有结合律，只需要考虑后式即可
+
+令 $F(x)=\sum_{n=0}^{\infty}f_nx^n=\frac{1}{(1-x)^k}$，则有：
+
+$$
+\begin{aligned}
+&F(x)=\frac{1}{(1-x)^k}=(1-x)^{-k} \\
+\Rightarrow &(1-x)F'(x)=-kF(x)(-1)=kF(x) \\
+\Rightarrow &\sum_{n=0}^{\infty}f_{n+1}(n+1)x^n-\sum_{n=1}^{\infty}f_nnx^n=\sum_{n=0}^{\infty}kf_nx^n \\
+\end{aligned}
+$$
+
+即：
+
+$$
+\begin{cases}
+f_0=F(0)=1 \\
+f_{0+1}(0+1)=kf_0 \Rightarrow f_1=k \\
+f_{n+1}(n+1)-f_{n}n=kf_n \quad (n \ge 1)
+\end{cases}
+$$
+
+最后一个即：
+
+$$
+\begin{aligned}
+&f_{n+1}=\frac{(k+n)f_n}{n+1} \quad & (n \ge 1) \\
+\Rightarrow &f_{n}=\frac{(k+n-1)f_{n-1}}{n} \quad & (n \ge 2) \\
+\end{aligned}
+$$
+
+因此可以 $O(n)$ 计算出 $\{f_n\}$ 后，再计算 $A(x) \times F(x)$ 即可
+
+于是问题转化为了，给定两个序列，求其卷积，其中序列长度不超过 $50000$，运算在模 $10^9+7$ 意义下
+
+如果使用分治乘法，时间复杂度为 $O(n^{1.59})$，代入数据可得跑的过去
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://code.mi.com/problem/list/view?id=118}{【mioj 118】Grizzly and GCD}}
+
+\subsection{题目大意}
+
+给定 $n,a,b$，保证 $\gcd(a,b)=1$，且 $1 < n,a,b < 10^5$，求下式在模 $10^9+7$ 意义下的值：
+
+$$
+\sum_{m=0}^{n}[2 \not| {n \choose m}] \sum_{i=1}^{n}\sum_{j=1}^{i-1} \gcd(a^i-b^i,a^j-b^j)
+$$
+
+\subsection{算法讨论}
+
+发现这就是个二合一，首先 $[2 \not| {n \choose m}]=[n \& m = m]$，之后考虑计算后面那个式子
+
+需要用到一个结论，即：
+
+$$
+\gcd(a,b)=1 \Rightarrow \gcd(a^i-b^i,a^j-b^j)=a^{\gcd(i,j)}-b^{\gcd(i,j)}
+$$
+
+于是就相当于求：
+
+$$
+\sum_{i=1}^{n}\sum_{j=1}^{i-1}\left(a^{\gcd(i,j)}-b^{\gcd(i,j)}\right)
+$$
+
+也就是相当于求：
+
+$$
+\begin{aligned}
+ &\sum_{i=1}^{n}\sum_{j=1}^{i-1}a^{\gcd(i,j)} \\
+=&\sum_{d=1}^{n}a^d\sum_{i=1}^{\lfloor \frac{n}{d} \rfloor}\sum_{j=1}^{i-1}[\gcd(i,j)=1] \\
+=&\sum_{d=1}^{n}a^d\left(-1+\sum_{i=1}^{\lfloor \frac{n}{d} \rfloor}\phi(i)\right)
+\end{aligned}
+$$
+
+直接暴力就好了
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
 
 \end{document}
 

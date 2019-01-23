@@ -154,5 +154,79 @@ $$
 O(n)
 $$
 
+\section{\href{https://www.zhixincode.com/contest/16/problem/G?problem_id=243}{【CCPC-Wannafly Winter Camp Day4 (Div1, onsite)】置置置换}}
+
+\subsection{题目大意}
+
+给定 $n$，求有多少个 $1 \sim n$ 的全排列，满足 $\forall 2 \le i \le n$，若 $2 \mid i$，则 $a_{i-1} > a_i$，否则 $a_{i-1} < a_i$
+
+其中 $1 \le n \le 1000$，答案对 $10^9+7$ 取模
+
+\subsection{算法讨论}
+
+设 $f_n$ 表示 $1 \sim n$ 的满足条件的全排列的个数，则：
+
+$$
+\begin{cases}
+f_0=1 \\
+f_1=1 \\
+f_n=\sum_{i=0}^{n-1} {n - 1 \choose i} f_i f_{n-1-i} [2 | i] \quad (n \ge 1)
+\end{cases}
+$$
+
+意义就是考虑第 $n$ 个数是必须放到偶数位置上，也就是说 $n$ 左侧必须要有偶数个数字
+
+\subsection{时间复杂度}
+
+$$
+O(n^2)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^2)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/16/problem/I?problem_id=245}{【CCPC-Wannafly Winter Camp Day4 (Div1, onsite)】咆咆咆哮}}
+
+\subsection{题目大意}
+
+$wls$ 手上有 $n$ 张牌，每张牌他都可以选择召唤一个攻击力为$a_i$ 的生物，或者使得场上所有生物的攻击力加 $b_i$ 
+
+请问如何抉择，使得场攻（场上生物攻击力的总和）最高
+
+$wls$ 可以任意选择出这 $n$ 张牌的顺序
+
+其中 $1 \le n \le 10^5,0 \le a_i,b_i \le 10^6$
+
+\subsection{算法讨论}
+
+首先最优决策一定是先召唤若干个生物，然后一直给它们加 $buff$
+
+设 $f(x)$ 表示召唤出 $x$ 个生物时的最大攻击力，即有 $n-x$ 个 $buff$
+
+由于某些原因，$f(x)$ 是一个关于 $x$ 的单峰函数，也就是可以三分
+
+考虑 $f(x)$ 怎么求，假设已经决定了一些卡片是召唤，一些是加 $buff$，考虑一张召唤的卡片 $i$ 和 一张加 $buff$ 的卡片 $j$ 进行交换后答案更有的条件：
+
+$$
+a_j + b_i \times x > a_i + b_j \times x
+$$
+
+那么按照 $a_i-a_i \times x$ 降序排序后，前 $x$ 个卡片用于召唤，后 $n-x$ 个卡片用于加 $buff$ 就好了
+
+\subsection{时间复杂度}
+
+$$
+O(n \log^2 n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
 \end{document}
 

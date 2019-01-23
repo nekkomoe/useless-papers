@@ -14,9 +14,7 @@
 \usepackage{setspace}
 \usepackage{abstract}
 \usepackage{graphicx}
-
-% \setmonofont{Consolas}
-
+\setmonofont{Consolas}
 \usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
 \renewcommand{\baselinestretch}{1.5}
 \geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
@@ -102,7 +100,11 @@ $$
 A ^\prime (x)=\sum_{n=0}^{\infty} a_{n+1}(n+1)x^n
 $$
 
-于是可以推出如下结论：
+同时可以得知，如果已知 $F(0)$ 和 $F ^\prime (x)$，可以还原出 $F(x)$
+
+\subsection{形式幂级数的幂次}
+
+通过形式幂级数的导数，可以得出如下结论：
 
 $$
 \begin{aligned}
@@ -112,67 +114,6 @@ $$
     \Rightarrow & A(x)F ^\prime (x)=pF(x)A ^\prime (x)
 \end{aligned}
 $$
-
-同时可以得知，如果已知 $F(0)$ 和 $F ^\prime (x)$，可以还原出 $F(x)$
-
-\subsection{形式幂级数的二次卷积}
-
-考虑形如如下的一类递推：
-
-$$
-f_k=g_k+h_k\sum_{i+j=k}f_if_j
-$$
-
-在进行一些整理后，它们的形式幂级数可以写作：
-
-$$
-A(x)F^2(x)+B(x)F(x)+C(x)=0
-$$
-
-若其为二次方程，则通过二次方程求根公式，可以得到：
-
-$$
-F(x)=\frac{-B(x) \pm \sqrt{B^2(x)-4A(x)C(x)}}{2A(x)}
-$$
-
-在确定完正负号后，可以化作：
-
-$$
-2A(x)F(x)=-B(x) \pm \sqrt{B^2(x)-4A(x)C(x)}
-$$
-
-因此只需要考虑一类形如 $\sqrt{A(x)}$ 的生成函数即可
-
-当 $A(x),B(x),C(x)$ 均为低阶多项式时，可以进行一些化简后，得到 $\{f_n\}$ 的线性递推式
-
-设 $F(x)=\sqrt{A(x)}$，则有：
-
-$$
-\begin{cases}
-    F ^\prime (x)=\frac{A ^\prime (x)}{2\sqrt{A(x)}}=\frac{A ^\prime (x)}{2} G(x) \\
-    G ^\prime (x)=\left(\frac{1}{\sqrt{A(x)}}\right) ^\prime =-\frac{A ^\prime (x)}{2A(x)}G(x)
-\end{cases}
-$$
-
-即：
-
-$$
-\begin{cases}
-    A ^\prime (x)G(x)=-2G ^\prime (x)A(x) \\
-    2F ^\prime (x)=A ^\prime (x)G(x)
-\end{cases}
-$$
-
-展开后可以得到：
-
-$$
-\begin{cases}
-    A ^\prime (x)\sum_{n=0}^{\infty}g_nx^n=-2A(x)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n \\
-    \sum_{n=0}^{\infty}2f_{n+1}(n+1)x^n=A ^\prime (x)\sum_{n=0}^{\infty}g_nx^n
-\end{cases}
-$$
-
-在依次进行线性递推后，可以得到 $\{f_n\}$
 
 \section{实例}
 
@@ -256,9 +197,117 @@ $$
 
 已知 \textbf{Motzkin numbers} 的形式幂级数为 $F(x)=\frac{1-x-\sqrt{1-2x-3x^2}}{2x^2}$，求其线性递推式
 
+设 $G(x)=\sqrt{1-2x-3x^2}$
+
+\subsubsection{求 $G(x)$}
+
+$$
+\begin{aligned}
+&G(x)=\sqrt{1-2x-3x^2} \\
+\Rightarrow &(1-2x-3x^2)G'(x)=\frac{1}{2}G(x)(-2-6x) \\
+\Rightarrow &(-1+2x+3x^2)G'(x)=(1+3x)G(x) \\
+\Rightarrow &(-1+2x+3x^2)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n=(1+3x)\sum_{n=0}^{\infty}g_nx^n \\
+\Rightarrow &-\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n+\sum_{n=1}^{\infty}2g_{n}nx^n+\sum_{n=2}^{\infty}3g_{n-1}(n-1)x^n=\sum_{n=0}^{\infty}g_nx^n+\sum_{n=1}^{\infty}3g_{n-1}x^n \\
+\end{aligned}
+$$
+
+可以得出：
+
+$$
+\begin{cases}
+g_0=G(0)=1 \\
+-g_{0+1}(0+1)=g_0 \Rightarrow g_1=-1 \\
+-g_{1+1}(1+1)+2g_11=g_1+3g_{1-1} \Rightarrow g_2=-2 \\
+-g_{n+1}(n+1)+2g_nn+3g_{n-1}(n-1)=g_{n}+3g_{n-1} \quad & (n \ge 2)\\
+\end{cases}
+$$
+
+最后一个即：
+
+$$
+\begin{aligned}
+&-g_{n+1}(n+1)+2g_nn+3g_{n-1}(n-1)=g_{n}+3g_{n-1} \quad & (n \ge 2) \\
+\Rightarrow &-g_{n+1}(n+1)+(2n-1)g_n+(3n-6)g_{n-1}=0 \quad & (n \ge 2) \\
+\Rightarrow &g_n=\frac{(2n-3)g_{n-1}+(3n-9)g_{n-2}}{n} \quad & (n \ge 3) \\
+\end{aligned}
+$$
+
+\subsubsection{求 $F(x)$}
+
+因为：
+
+$$
+\begin{aligned}
+&2x^2F(x)=1-x-G(x) \\
+\Rightarrow &\sum_{n=2}^{\infty}2f_{n-2}x^n=(1-g_0)-(g_1+1)x-\sum_{n=2}^{\infty}g_nx^n
+\end{aligned}
+$$
+
+可以得出：
+
+$$
+\begin{aligned}
+&2f_{n-2}=-g_n \quad & (n \ge 2) \\
+\Rightarrow &f_{n}=-\frac{g_{n+2}}{2} \quad & (n \ge 0)
+\end{aligned}
+$$
+
 \subsection{Catalan numbers}
 
 已知 \textbf{Catalan numbers} 的形式幂级数为 $F(x)=\frac{1-\sqrt{1-4x}}{2x}$，求其线性递推式
+
+设 $G(x)=\sqrt{1-4x}$
+
+\subsubsection{求 $G(x)$}
+
+$$
+\begin{aligned}
+&G(x)=\sqrt{1-4x} \\
+\Rightarrow &(1-4x)G'(x)=\frac{1}{2}G(x)(-4) \\
+\Rightarrow &(4x-1)\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n=\sum_{n=0}^{\infty}2g_nx^n \\
+\Rightarrow &\sum_{n=1}^{\infty}4g_{n}nx^n-\sum_{n=0}^{\infty}g_{n+1}(n+1)x^n=\sum_{n=0}^{\infty}2g_nx^n \\
+\end{aligned}
+$$
+
+可以得出：
+
+$$
+\begin{cases}
+g_0=G(0)=1 \\
+-g_{0+1}(0+1)=2g_0 \Rightarrow g_1=-2 \\
+4g_{n}n-g_{n+1}(n+1)=2g_{n} \quad (n \ge 1)
+\end{cases}
+$$
+
+最后一个即：
+
+$$
+\begin{aligned}
+&4g_nn-g_{n+1}(n+1)=2g_n \quad & (n \ge 1) \\
+\Rightarrow &g_{n+1}=\frac{(4n-2)g_n}{n+1} \quad & (n \ge 1) \\
+\Rightarrow &g_{n}=\frac{(4n-6)g_{n-1}}{n} \quad & (n \ge 2) \\
+\end{aligned}
+$$
+
+\subsubsection{求 $F(x)$}
+
+因为：
+
+$$
+\begin{aligned}
+&2xF(x)=1-G(x) \\
+\Rightarrow & \sum_{n=1}^{\infty}2f_{n-1}x^n=1-\sum_{n=0}^{\infty} g_{nx^n}
+\end{aligned}
+$$
+
+可以得出：
+
+$$
+\begin{aligned}
+&2f_{n-1}=-g_{n} \quad & (n \ge 1) \\
+\Rightarrow & f_{n}=-\frac{g_{n+1}}{2} \quad & (n \ge 0)
+\end{aligned}
+$$
 
 \begin{thebibliography}{}
     \bibitem[1]{REF1}\href{https://zhuanlan.zhihu.com/p/31457805}{生成函数及应用}, ACdreamer

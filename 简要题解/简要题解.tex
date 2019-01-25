@@ -228,5 +228,346 @@ $$
 O(n)
 $$
 
+\section{\href{https://www.51nod.com/Challenge/Problem.html?problemId=1627}{【51nod 1627】瞬间移动}}
+
+\subsection{题目大意}
+
+有一个无限大的矩形，初始时你在左上角（即第一行第一列）
+
+每次你都可以选择一个右下方格子，并瞬移过去
+
+求到第 $n(2 \le n \le 10^5)$ 行第 $m(2 \le m \le 10^5)$ 列的格子有几种方案，答案对 $1000000007$ 取模
+
+\subsection{算法讨论}
+
+枚举步数 $i$，之后相当于把 $n-1$ 分成 $i$ 份，$m-1$ 分成 $i$ 份
+
+因此答案就是：
+
+$$
+\sum_{i=1}^{\min(n-1,m-1)} {n-2 \choose i-1} {m-2 \choose i-1}
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.51nod.com/Challenge/Problem.html?problemId=1149}{【51nod 1149】Pi的递推式}}
+
+\subsection{题目大意}
+
+给定 $n(n \le 10^6)$，求 $f(n) \bmod (10^9+7)$，其中：
+
+$$
+\begin{aligned}
+f(n)=\begin{cases}
+1 &\quad 0 \le n < 4 \\
+f(n-1) + f(n-\pi) &\quad n \ge 4
+\end{cases}
+\end{aligned}
+$$
+
+\subsection{算法讨论}
+
+画出转移图，考虑 $f_i$ 对答案的贡献，枚举使用多少次 $\pi$，然后组合数计算答案
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.51nod.com/Challenge/Problem.html?problemId=1488}{【51nod 1488】帕斯卡小三角}}
+
+\subsection{题目大意}
+
+已知
+
+$$
+\begin{cases}
+f_{1,j}=a_j &\qquad 1 \le j \le n \\
+f_{i,j}=\min(f_{i-1,j},f_{i-1,j-1})+a_j &\qquad 2 \le i \le j \le n
+\end{cases}
+$$
+
+其中 $a(a_i \le 10^4)$ 是一个长度为 $n(n \le 10^5)$ 的数组
+
+有 $m(m \le 10^5)$ 次询问，输入 $x,y$，求 $f_{x,y}$
+
+\subsection{算法讨论}
+
+手玩后发现转移单调，即一定是从第一行的某个点往下走一段距离后一直往右下方走到目标点
+
+写出动规方程，发现是斜率优化形式
+
+由于凸包是静态的，可以直接线段树维护区间凸包，在每个凸包上三分就行
+
+\subsection{时间复杂度}
+
+$$
+O(n \log^2 n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=5424}{【bzoj 5424】烧桥计划}}
+
+\subsection{题目大意}
+
+\subsection{算法讨论}
+
+考虑一个 $O(n^2)$ 的暴力，设 $f_{i,j}$ 表示考虑完前 $i$ 个，第 $i$ 个要删掉，且一共删了 $j$ 个的最小代价
+
+那么有：
+
+$$
+f_{i,j}=\min(f_{k,j-1}+\text{cost}(k+1,i-1))+j \times a_i
+$$
+
+其中若 $s_{i-1}-s_{k} \le m$，则 $\text{cost}(k+1,i-1)=0$，否则 $\text{cost}(k+1,i-1)=s_{i-1}-s_{k}$
+
+设 $k$ 表示删了多少个，对于 $k=0$ 的初始解，它的至少代价为 $1000n$
+
+对于一个任意 $k$ 的解，它的至少代价为 $\sum_{i=1}^{k}1000=500k(k+1)$
+
+那么如果一个 $k$ 会对答案产生更优的影响，则有 $500k(k+1) \le 1000n \Rightarrow k \le \sqrt n$
+
+于是只需要保存 $k \le \sqrt n$ 的解，时间复杂度将为 $O(n \sqrt n)$
+
+\subsection{时间复杂度}
+
+\subsection{空间复杂度}
+
+\section{\href{https://nanti.jisuanke.com/t/34061}{【2018-2019 ICPC, Asia Xuzhou Regional Contest】Rikka with Subsequences}}
+
+\subsection{题目大意}
+
+给定一个长度为 $n(n \le 200)$ 的序列 $q$，每个位置是 $[1, n]$ 之间的整数
+
+给定 $n \times n$ 的 $01$ 矩阵 $g$，定义一个序列 $a_1,a_2, \cdots, a_m$ 是好的，当且仅当且对于任意的 $1 \le i \le m$，有 $g_{a_i,a_{i+1}}=1$ 恒成立
+
+假设有一个 $std::map$ 保存了 $q$ 的每个好的子序列的出现次数，你需要统计它们的出现次数的立方和
+
+\subsection{算法讨论}
+
+首先对于 $x^3$ 有一个等价变换：
+
+$$
+x^3=\sum_{i=1}^{x}\sum_{j=1}^{x}\sum_{k=1}^{x}1
+$$
+
+于是可以把序列 $q$ 复制成三份 $a,b,c$，然后求有多少个好的公共子序列
+
+\subsection{时间复杂度}
+
+\subsection{空间复杂度}
+
+\section{\href{https://vjudge.net/problem/URAL-2057}{【ural 2057】Non-palindromic cutting}}
+
+\subsection{题目大意}
+
+给定一个长度为 $n$ 的字符串 $S$
+
+将 $S$ 划分为若干段非空连续子串，使得每段都不是回文串
+
+求最多能划分成多少段
+
+\subsection{算法讨论}
+
+\subsection{时间复杂度}
+
+\subsection{空间复杂度}
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2368}{【Google Code Jam 2008 APAC Onsites】Modern Art Plagiarism}}
+
+\subsection{题目大意}
+
+给定两棵无根树 $A$ 和 $B$，判断是否存在 $A$ 的一个子连通块和 $B$ 同构，其中树的节点数不超过 $100$
+
+\subsection{算法讨论}
+
+首先把无根树变为有根树再做，钦定 $B$ 的根为 $1$，然后枚举 $A$ 的根，使得 $A$ 和 $B$ 的根是同构的
+
+如何判断两个棵树 $A_r,B_r$ 是否同构呢？
+
+建立二分图，如果 $A_r$ 的某个儿子 $u$ 和 $B_r$ 的某个儿子 $v$ 同构，那么连一条从 $u$ 到 $v$ 的边，如果这个二分图有完美匹配，那么当前这个配对节点可以同构
+
+\subsection{时间复杂度}
+
+$$
+O(n^2 \sqrt{n} n^2)=O(n^{4.5})
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^2)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/20/problem/J?problem_id=305}{【CCPC-Wannafly Winter Camp Day5 (Div1, onsite)】Special Judge}}
+
+\subsection{题目大意}
+
+有一个 $n(1 \le n \le 1000)$ 个点 $m(1 \le m \le 2000)$ 条边的图画在了平面上，你想知道有多少对边之间对应的线段相交
+
+特别地，对于图中的一对边，如果有公共点且只在对应的端点相交，那么我们不认为这对边相交
+
+\subsection{算法讨论}
+
+大分类讨论题
+
+先判断是否一条线段的两个端点都在另一条线段上，之后跨立实验来判断是否可能相交，然后特判两次跨立实验的面积都为 $0$，然后判断是否只在某个端点处有交点
+
+\subsection{时间复杂度}
+
+$$
+O(m^2)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+m)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/20/problem/E?problem_id=300}{【CCPC-Wannafly Winter Camp Day5 (Div1, onsite)】Fast Kronecker Transform}}
+
+\subsection{题目大意}
+
+给定两个序列 $a_0,a_1, \cdots, a_n$ 和 $b_0,b_1, \cdots, b_m$，求一个序列 $c_0,c_1, \cdots, c_{n+m}$，满足：
+
+$$
+c_{k}=\sum_{i+j=k}ij \times [a_i=b_j]
+$$
+
+\subsection{算法讨论}
+
+枚举权值，设出现次数为 $x$
+
+如果 $x \le T$，那么可以直接 $O(x^2)$ 暴力卷积
+
+否则把出现该权值的位置标为对应下标，其它位置为 $0$，然后进行 $NTT$，这个部分的时间复杂度为 $O(x \log x)$
+
+综上，总的时间复杂度为 $O(T^2 \frac{n}{T} + n \log n \frac{n}{T})=O(nT+n \log n \frac{n}{T})$
+
+当 $nT=n \log n \frac{n}{T}$ 时，即 $T=\sqrt{n \log n}$，时间复杂度为 $O(n \sqrt {n \log n})$
+
+实际上，由于种种原因，应该令 $T=10^4$
+
+\subsection{时间复杂度}
+
+$$
+O(n \sqrt{n \log n})
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/20/problem/I?problem_id=304}{【CCPC-Wannafly Winter Camp Day5 (Div1, onsite)】Sorting}}
+
+\subsection{题目大意}
+
+你有一个数列 $a_1, a_2, \dots, a_n$，你要模拟一个类似于快速排序的过程，同时给定一个固定的数字 $x$
+
+一共有 $q$ 次操作，诸如如下三种：
+
+1. 询问区间 $[l, r]$ 之间的元素的和，也就是 $\sum_{i=l}^r a_i$
+
+2. 对区间 $[l,r]$ 进行操作，也就是说你把区间中所有的数字拿出来，然后把小于等于 $x$ 的数字按顺序放在左边，把大于 $x$ 的数字按顺序放在右边，把这些数字接起来，放回到数列中
+
+3. 对区间 $[l,r]$ 进行操作，也就是说你把区间中所有的数字拿出来，然后把大于 $x$ 的数字按顺序放在左边，把小于等于 $x$ 的数字按顺序放在右边，把这些数字接起来，放回到数列中
+
+其中 $1 \le n,q \le 2 \times 10^5, 0 \le x \le 10^9, 1 \le a_i \le 10^9$
+
+\subsection{算法讨论}
+
+这道题的主要难点是在于读清楚题意，这个 $x$ 是一个常数
+
+那么就好做了，把 $a_i \le x$ 的那一些标为 $1$，把 $a_i > x$ 的那些标为 $0$，然后后两个操作相当于区间 $01$ 排序，直接线段树维护区间赋值即可
+
+由于是按照顺序重新排列，因此所有标为 $0$ 的数字，它们在原先序列上的相对顺序不变，$1$ 同理
+
+然后在查询的时候只需要分别知道查询区间的 $01$ 的个数，和之前的 $01$ 的个数即可
+
+\subsection{时间复杂度}
+
+$$
+O((n+q) \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://code.mi.com/problem/list/view?id=125}{【小米 OJ 编程比赛 01 月常规赛】灯}}
+
+\subsection{题目大意}
+
+一个屋子有 $n$ 个开关控制着 $n$ 盏灯，但奇怪的是，每个开关对应的不是一盏灯，而是 $n-1$ 盏灯
+
+每次按下这个开关，其对应的 $n-1$ 盏灯就会由亮变灭，或者由灭变亮
+
+保证不会有两个开关控制同样的 $n-1$ 盏灯
+
+现在刘同学想把灯全部开好，但是这些灯一开始的状态非常乱，刘同学想知道最少需要按多少次开关才能使所有灯全部亮起
+
+\subsection{算法讨论}
+
+这出题人水平不行啊，抄原题就算了，题面写的还不清楚
+
+通过猜想题意，可以假设题意是这样的：有 $n$ 个灯泡和 $n$ 个开关，一开始编号为 $1 \sim l$ 的灯泡是亮的，第 $i$ 个开关按下后会让所有除了第 $i$ 号灯泡外的其它灯泡全部翻转，求最少按多少次开关可以使得所有灯全部亮起
+
+按照套路，设 $x_i$ 表示第 $i$ 个开关是否按下，显然 $x_i \in \{0,1\}$，且答案就是 $\sum_{i=1}^{n}x_i$ 的最小值
+
+同时为了满足灯泡最后都是亮的这个要求，则有如下约束：
+
+$$
+\begin{cases}
+\oplus_{j=1 \wedge i \not= j}^{n}x_j = 0 \quad & (1 \le i \le l) \\
+\oplus_{j=1 \wedge i \not= j}^{n}x_j = 1 \quad & (l+1 \le i \le n)
+\end{cases}
+$$
+
+显然，只需要枚举 $T=\oplus_{i=1}^{n}x_i$ 的值，就会得到这个方程组的唯一解
+
+如果 $T=0$，那么 $\forall 1 \le i \le l,x_i=0$，且 $\forall l+1 \le i \le n,x_i=1$
+
+如果 $T=1$，那么 $\forall 1 \le i \le l,x_i=1$，且 $\forall l+1 \le i \le n,x_i=0$
+
+\subsection{时间复杂度}
+
+$$
+O(1)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(1)
+$$
+
 \end{document}
 

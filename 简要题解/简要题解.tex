@@ -5,22 +5,20 @@
 \title {简要题解}
 \date{2019.1.23}
 \usepackage[UTF8]{ctex}
+
 \usepackage{listings}
 \usepackage{fontspec}
-\usepackage{ctex}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{geometry}
 \usepackage{setspace}
 \usepackage{abstract}
 \usepackage{graphicx}
-\setmonofont{Consolas}
 \usepackage{verbatim}
 \usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
 \renewcommand{\baselinestretch}{1.5}
 \geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
-
-
+\setmonofont{Consolas}
 
 \begin{document}
 
@@ -332,6 +330,14 @@ $$
 
 \subsection{题目大意}
 
+给定一个长度为 $n$ 的序列 $a_1,a_2,\dots,a_n$ 和一个参数 $m$
+
+你要从中删掉若干个位置 $p_1,p_2, \dots ,p_k  (1 \le p_1 < p_2 < \dots < p_k \le n)$，耗费 $\sum_{i=1}^{k}i \times a_{p_i}$ 的代价。
+
+上一步会把序列分割成 $k + 1$ 段，对于剩下的每段求和，如果某一段的和 $sum > m$，则要额外支付 $sum$ 的代价
+
+$k$ 是你任选的，求最小总代价，其中 $n \le 100000, 1000 \le a_i \le 2000$
+
 \subsection{算法讨论}
 
 考虑一个 $O(n^2)$ 的暴力，设 $f_{i,j}$ 表示考虑完前 $i$ 个，第 $i$ 个要删掉，且一共删了 $j$ 个的最小代价
@@ -339,18 +345,34 @@ $$
 那么有：
 
 $$
-f_{i,j}=\min(f_{k,j-1}+\text{cost}(k+1,i-1))+j \times a_i
+f_{i,j}=\min(f_{k,j-1}+\text{cost}(s_{i-1}-s_{k}))+j \times a_i
 $$
 
-其中若 $s_{i-1}-s_{k} \le m$，则 $\text{cost}(k+1,i-1)=0$，否则 $\text{cost}(k+1,i-1)=s_{i-1}-s_{k}$
+其中 $\text{cost}(x)=x \times [x > m]$
 
-设 $k$ 表示删了多少个，对于 $k=0$ 的初始解，它的至少代价为 $1000n$
+转移的话可以考虑 $\text{cost}(s_{i-1}-s_{k})$ 是否为 $0$ 作为分界点
+
+假设有一个 $k$，满足：$\forall 1 \le t \le k, s_{i-1}-s_{t} > m$，有转移：
+
+$$
+f_{i,j} = \min\{ f_{t,j-1}-s_t \} +j \times a_i+s_{i-1}
+$$
+
+同时这个 $k$ 应满足 $\forall k+1 \le t \le i-1, s_{i-1}-s_{t} \le m$，有转移：
+
+$$
+f_{i,j} = \min \{ f_{t,j-1} \} +j \times a_i
+$$
+
+对于前半部分，可以通过维护前缀最小值实现，对于后半部分，可以通过维护单调队列来实现
+
+设 $k$ 表示删了多少个，对于 $k=0$ 的初始解，它的至多代价为 $2000n$
 
 对于一个任意 $k$ 的解，它的至少代价为 $\sum_{i=1}^{k}1000=500k(k+1)$
 
-那么如果一个 $k$ 会对答案产生更优的影响，则有 $500k(k+1) \le 1000n \Rightarrow k \le \sqrt n$
+那么如果一个 $k$ 可能会对答案产生更优的影响，则至少有 $500k(k+1) \le 2000n \Rightarrow k = O(\sqrt n)$
 
-于是只需要保存 $k \le \sqrt n$ 的解，时间复杂度将为 $O(n \sqrt n)$
+于是只需要保存 $k \le O(\sqrt n)$ 的解，时间复杂度将为 $O(n \sqrt n)$
 
 \subsection{时间复杂度}
 
@@ -363,46 +385,6 @@ $$
 $$
 O(n \sqrt n)
 $$
-
-\section{\href{https://nanti.jisuanke.com/t/34061}{【2018-2019 ICPC, Asia Xuzhou Regional Contest】Rikka with Subsequences}}
-
-\subsection{题目大意}
-
-给定一个长度为 $n(n \le 200)$ 的序列 $q$，每个位置是 $[1, n]$ 之间的整数
-
-给定 $n \times n$ 的 $01$ 矩阵 $g$，定义一个序列 $a_1,a_2, \cdots, a_m$ 是好的，当且仅当且对于任意的 $1 \le i \le m$，有 $g_{a_i,a_{i+1}}=1$ 恒成立
-
-假设有一个 $std::map$ 保存了 $q$ 的每个好的子序列的出现次数，你需要统计它们的出现次数的立方和
-
-\subsection{算法讨论}
-
-首先对于 $x^3$ 有一个等价变换：
-
-$$
-x^3=\sum_{i=1}^{x}\sum_{j=1}^{x}\sum_{k=1}^{x}1
-$$
-
-于是可以把序列 $q$ 复制成三份 $a,b,c$，然后求有多少个好的公共子序列
-
-\subsection{时间复杂度}
-
-\subsection{空间复杂度}
-
-\section{\href{https://vjudge.net/problem/URAL-2057}{【ural 2057】Non-palindromic cutting}}
-
-\subsection{题目大意}
-
-给定一个长度为 $n$ 的字符串 $S$
-
-将 $S$ 划分为若干段非空连续子串，使得每段都不是回文串
-
-求最多能划分成多少段
-
-\subsection{算法讨论}
-
-\subsection{时间复杂度}
-
-\subsection{空间复杂度}
 
 \section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2368}{【Google Code Jam 2008 APAC Onsites】Modern Art Plagiarism}}
 
@@ -577,5 +559,499 @@ $$
 O(1)
 $$
 
-\end{document}
+\section{\href{https://www.zhixincode.com/contest/28/problem/E?problem_id=408}{【CCPC-Wannafly Winter Camp Day8 (Div1, onsite)】Souls-like Game}}
 
+\subsection{题目大意}
+
+给定 $n$ 个 $3 \times 3$ 的矩阵，有 $m$ 次操作，每次诸如把 $[l,r]$ 中所有的矩阵都变为输入的一个矩阵，或者查询 $[l,r]$ 的所有矩阵的连乘积后的所有元素的和
+
+输出对 $998244353$ 取模，且 $n,m \le 10^5$
+
+\subsection{算法讨论}
+
+如果直接进行线段树维护矩阵，时间复杂度是 $O(26 n\log^2n)$ 的，无法通过此题
+
+考虑先把 $n$ 扩充到 $2^k$，这样对于每次修改，只会有 $O(\log n)$ 个参与修改的矩阵，于是可以先对于所有修改，都预处理出来，然后进行修改
+
+\subsection{时间复杂度}
+
+$$
+O(27 (n+q) \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(27 (n+q \log n))
+$$
+
+\section{\href{https://www.zhixincode.com/contest/28/problem/I?problem_id=412}{【CCPC-Wannafly Winter Camp Day8 (Div1, onsite)】岸边露伴的人生经验}}
+
+\subsection{题目大意}
+
+给定 $n$ 个 $10$ 维向量 $\{V_n\}$，每一维的值在 $\{0,1,2\}$ 中
+
+定义向量 $\overrightarrow{V}=(x_1,x_2, \dots ,x_10)$ 的模长 $|\overrightarrow{V}|$ 为 $\sqrt{x_1^2+x_2^2+x_3^2+\dots+x_{10}^2}$
+
+求有多少个四元组 $(i,j,k,l)$，满足 $1 \le i,j,k,l \le n$ 且 $|\overrightarrow{V_i}-\overrightarrow{V_j}|=|\overrightarrow{V_k}-\overrightarrow{V_l}|$
+
+\subsection{算法讨论}
+
+首先去掉根号后答案不变，为了方便起见，所有的模长都平方一下
+
+之后相当于对于所有 $0 \le x \le 40$，求有多少 $(i,j)$，满足 $1 \le i,j \le n$，且 $|\overrightarrow{V_i}-\overrightarrow{V_j}|=x$，求完之后对于所有 $x$，把对数平方再求和就是答案
+
+考虑如下的一张差的平方的真值表：
+
+$$
+\begin{array} {c|lcr}
+ & \text{0} & \text{1} & \text{2} \\
+\hline
+0 & 0 & 1 & 4 \\
+1 & 1 & 0 & 1 \\
+2 & 4 & 1 & 0
+\end{array}
+$$
+
+再考虑异或的真值表：
+
+$$
+\begin{array} {c|lcr}
+ & \text{0} & \text{1} & \text{2} \\
+\hline
+0 & 0 & 1 & 2 \\
+1 & 1 & 0 & 3 \\
+2 & 2 & 3 & 0
+\end{array}
+$$
+
+可以得到一个异或向差方的映射：
+
+$$
+\begin{cases}
+0 \Rightarrow 0 \\
+1 \Rightarrow 1 \\
+2 \Rightarrow 4 \\
+3 \Rightarrow 1
+\end{cases}
+$$
+
+考虑把向量 $\overrightarrow{V}$ 看成 $10$ 个 $4$ 进制数，然后求异或卷积，即可得到一个异或数组，然后依次映射到差方数组即可
+
+\subsection{时间复杂度}
+
+$$
+O(2^{20} \times 20)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(2^{20})
+$$
+
+\section{\href{https://www.zhixincode.com/contest/28/problem/G?problem_id=410}{【CCPC-Wannafly Winter Camp Day8 (Div1, onsite)】穗乃果的考试}}
+
+\subsection{题目大意}
+
+给定一个 $n \times m$ 的 $01$ 矩阵，设 $f_i$ 表示恰好有 $i$ 个 $1$ 的子矩阵个数，求：
+
+$$
+\sum_{i=0}^{nm}i^2f_i
+$$
+
+
+\subsection{算法讨论}
+
+考虑 $x^2$ 的等价变形：
+
+$$
+x^2=\sum_{i=1}^{x}\sum_{j=1}^{x}1 \times 1
+$$
+
+于是可以枚举两个为 $1$ 的格子，然后计算有多少个子矩阵包括它们
+
+通过枚举其中一个格子后，另一个格子通过前缀和来计算
+
+\subsection{时间复杂度}
+
+$$
+O(nm)
+$$
+
+
+\subsection{空间复杂度}
+
+$$
+O(nm)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/24/problem/J?problem_id=358}{【CCPC-Wannafly Winter Camp Day7 (Div1, onsite)】强壮的排列}}
+
+\subsection{题目大意}
+
+给定奇数 $n$，求有多少个 $1 \sim n$ 的全排列，满足 $\forall 2 \le i \le n$，若 $2 \mid i$，则 $a_{i-1} < a_i$，否则 $a_{i-1} > a_i$
+
+其中 $1 \le n \le 10^5$，答案对 $998244353$ 取模
+
+\subsection{算法讨论}
+
+设 $a_n$ 表示 $1 \sim n$ 的满足条件的全排列的个数，则：
+
+$$
+\begin{cases}
+a_0=1 \\
+a_1=1 \\
+a_n=\sum_{i=0}^{n-1} {n - 1 \choose i} a_i a_{n-1-i} [2 \not| i] \quad (n \ge 1)
+\end{cases}
+$$
+
+意义就是考虑第 $n$ 个数是必须放到奇数位置上，也就是说 $n$ 左侧必须要有奇数个数字
+
+由于输入的 $n$ 是奇数，所以可以强行钦定 $a_{2x}=0$，即所有偶数项都为 $0$，然后就可以去掉 $[2 \not| i]$ 这一项了，即：
+
+$$
+\begin{cases}
+a_0=0 \\
+a_1=1 \\
+a_n=\sum_{i=0}^{n-1}{n-1 \choose i} a_i a_{n-1-i} \quad (n \ge 1)
+\end{cases}
+$$
+
+整理可得：
+
+$$
+\begin{aligned}
+&a_n=\sum_{i=0}^{n-1}{n-1 \choose i} a_i a_{n-1-i} \\
+\Rightarrow &a_n=\sum_{i=0}^{n-1}\frac{(n-1)!}{i!(n-1-i)!}a_ia_{n-1-i} \\
+\Rightarrow &n\frac{a_n}{n!}=\sum_{i=0}^{n-1}\frac{a_i}{i!}\frac{a_{n-1-i}}{(n-1-i)!} \\
+\Rightarrow &nf_n=\sum_{i=0}^{n-1}f_if_{n-1-i}
+\end{aligned}
+$$
+
+设 $F(x)$ 表示 $\{f_n\}$ 的生成函数，则有：
+
+$$
+\begin{aligned}
+F'(x)=F^2(x)+1 \\
+\end{aligned}
+$$
+
+设 $y=F(x)$，则：
+
+$$
+\begin{aligned}
+& \frac{dy}{dx}=y^2+1 \\
+\Rightarrow & \int \frac{dy}{y^2+1}=\int 1 dx \\
+\Rightarrow & \arctan(y)=x+C \\
+\Rightarrow & y=\tan(x+C)
+\end{aligned}
+$$
+
+令 $C=0$，所以：
+
+$$
+\begin{aligned}
+F(x)=\tan(x)=\frac{\sin(x)}{\cos(x)}
+\end{aligned}
+$$
+
+泰勒展开后多项式求逆即可
+
+补充一个积分的推导：
+
+设 $x=\tan y$，即 $y=\arctan x$
+
+$$
+\begin{aligned}
+&\int \frac{1}{x^2+1}dx \\
+=&\int \frac{1}{\tan^2y+1}d \tan y \\
+=&\int \frac{1}{\frac{\sin^2y}{\cos^2y}+1}d \frac{\sin y }{\cos y} \\
+=&\int \frac{\cos^2y}{\sin^2y+\cos^2y} \frac{\cos^2y-(-\sin^2y)}{\cos^2y}dy\\
+=&y+C \\
+=&C+\arctan x
+\end{aligned}
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/28/problem/B?problem_id=405}{【CCPC-Wannafly Winter Camp Day8 (Div1, onsite)】玖凛两开花}}
+
+\subsection{题目大意}
+
+给出一张点集为 $V$，边集为 $E$ 的无向图 $G$，点的编号为 $0$ 至 $|V|-1$，边 $(u,v)$ 的权值为 $\min(u,v)$
+
+一个边集 $S$ 是图的一个匹配当且仅当 $S \subseteq E$，且 $\forall e_1,e_2 \in S \bigwedge e_1 \neq e_2$，满足 $e_1,e_2$ 无公共端点
+
+对于一个边集 $S$，定义 $W_S$ 为 $S$ 中所有边的权值的集合
+
+对于一个自然数集 $W$，定义 $Mex(W)$ 为最小的不属于 $W$ 的自然数
+
+求对于图 $G$ 的匹配 $S$，$Mex(W_S)$ 的最大值是多少
+
+好心的 $Rinne$ 为了减少你的负担，将题目的做法告诉了你，你只需要实现一个高效的开花算法即可
+
+当然，如果你已经会做这道题了，就可以不用继续看下去了
+
+$Rinne$ 给出的做法是这样的：
+
+对于所有的边 $e \in E$，若其原本的边权为 $w$，将其改为 $2^{|V|-w}$ 
+
+求出新图的最大权匹配后，设其权值之和为 $X$，将其二进制表示中的最低 $|V|+1$ 位由高位到低位依次写出来，第一个为 $0$ 的位的出现位置（从 $0$ 开始编号）就是答案
+
+其中 $1 \le |V| \le 10^4, 1 \le |E| \le 2 \times 10^4$
+
+\subsection{算法讨论}
+
+二分答案后，可以把原图拆分为两个二分图，只需判断是否完全匹配即可
+
+\subsection{时间复杂度}
+
+$$
+O(m \sqrt n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=1566}{【NOI2009】管道取珠}}
+
+\subsection{题目大意}
+
+管道取珠是小 $X$ 很喜欢的一款游戏。在本题中，我们将考虑该游戏的一个简单改版
+
+游戏初始时，左侧上下两个管道分别有一定数量的小球（有深色球和浅色球两种类型），而右侧输出管道为空
+
+每一次操作，可以从左侧选择一个管道，并将该管道中最右侧的球推入右边输出管道
+
+假设上管道中有 $n$ 个球, 下管道中有 $m$ 个球，则整个游戏过程需要进行 $n+m$ 次操作，即将所有左侧管道中的球移入输出管道
+
+最终 $n+m$ 个球在输出管道中从右到左形成输出序列
+
+爱好数学的小 $X$ 知道，他共有 ${n+m \choose n}$ 种不同的操作方式，而不同的操作方式可能导致相同的输出序列
+
+假设最终可能产生的不同种类的输出序列共有 $K$ 种，其中：第 $i$ 种输出序列的产生方式（即不同的操作方式数目）有 $a_i$ 个
+
+聪明的小 $X$ 早已知道，$\sum a_i={n+m \choose n}$
+
+因此，小X希望计算得到：$\sum a_i^2$，由于这个值可能很大，因此只需要输出该值对 $1024523$ 的取模即可
+
+其中 $n, m \le 500$
+
+\subsection{算法讨论}
+
+题意相当于把所有的可能的操作放到一个 $map$ 中，其中相同的判定为生成的序列相同，然后输出所有相同集的大小的平方和
+
+如果把序列复制一倍，相当于公共子序列的个数，因为在平方的时候，有序点对 $(i,j)$ 会被计算一次
+
+于是可以设 $f_{i,j,k,l}$ 分别表示原序列操作到了 $(i,j)$，复制序列操作到了 $(k,l)$ 时的公共子序列个数
+
+由于 $k+l=i+j$，所以可以移除掉 $l$ 这一维，然后 $i$ 这一维可以滚动数组优化掉
+
+\subsection{时间复杂度}
+
+$$
+O(n^3)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^2)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=1108}{【POI 2007】天然气管道}}
+
+\subsection{题目大意}
+
+平面上分别有 $n(n \le 50000)$ 个黑点和白点，每个黑点只能像在它右下方的白点匹配
+
+求一个黑白完美匹配，使得匹配的点对的曼哈顿距离和最小
+
+\subsection{算法讨论}
+
+若一个黑点为 $(x,y)$，那么它对答案的贡献就是 $y-x$，白点为 $x-y$
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(1)
+$$
+
+\section{\href{http://acm.hdu.edu.cn/showproblem.php?pid=5887}{【2016 ACM/ICPC Asia Regional Qingdao Online
+】Herbs Gathering}}
+
+\subsection{题目大意}
+
+给定 $n(n \le 100)$ 个物品，每个物品有 $(w,v)$ 两个属性，要求从中选出一些物品，使得 $\sum w$ 不超过 $m(m \le 10^9)$，最大化 $\sum v$，保证数据随机生成
+
+\subsection{算法讨论}
+
+假设存在一个状态 $(\sum w,\sum v)$，如果存在另一个状态 $(\sum w',\sum v')$，其中 $\sum w' \le \sum w$ 且 $\sum v' \ge \sum v$，那么状态 $(\sum w, \sum v)$ 就没有存在的必要了
+
+可以证明这么做的话单次的期望状态数为 $O(\log (n!))=O(n \log n)$
+
+\subsection{时间复杂度}
+
+$$
+O(n^2 \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\section{\href{https://nanti.jisuanke.com/t/34061}{【2018-2019 ICPC, Asia Xuzhou Regional Contest】Rikka with Subsequences}}
+
+\subsection{题目大意}
+
+给定一个长度为 $n(n \le 200)$ 的序列 $q$，每个位置是 $[1, n]$ 之间的整数
+
+给定 $n \times n$ 的 $01$ 矩阵 $g$，定义一个序列 $a_1,a_2, \cdots, a_m$ 是好的，当且仅当且对于任意的 $1 \le i \le m$，有 $g_{a_i,a_{i+1}}=1$ 恒成立
+
+假设有一个 $std::map$ 保存了 $q$ 的每个好的子序列的出现次数，你需要统计它们的出现次数的立方和
+
+\subsection{算法讨论}
+
+首先对于 $x^3$ 有一个等价变换：
+
+$$
+x^3=\sum_{i=1}^{x}\sum_{j=1}^{x}\sum_{k=1}^{x}1 \times 1 \times 1
+$$
+
+于是可以把序列 $q$ 复制成三份 $a,b,c$，然后求有多少个好的公共子序列
+
+考虑第一个暴力，$f_{i,j,k}$ 表示第一个序列到了 $i$，第二个序列到了 $j$，第三个序列到了 $k$，且强制选上 $a_i,b_j,c_k$ 的好的公共子序列个数
+
+转移即枚举 $i \to x, j \to y, k \to z, g_{a_i, a_{x}}=1,a_x=b_y=c_z$，时间复杂度为 $O(n^6)$
+
+考虑优化这个暴力，将移动分为三个阶段：移动 $i$，移动 $j$，移动 $k$
+
+于是可以设 $f_{i,j,k,0/1/2}$ 表示当前移动 $i/j/k$ 的方案数，若移动 $i$，则找一个 $x$，使得 $g_{a_i,a_x}=1$ 就行，若移动 $j$，则找一个 $y$ 使得 $a_i=b_y$ 就行，$k$ 和 $j$ 同理，此时时间复杂度为 $O(n^4)$
+
+其实从枚举 $x$ 也是没有必要的
+
+简化转移：要么将 $x$ 增加 $1$，要么钦定这个 $x$ 就是我们想要的 $x$，开始 $y$ 的转移
+
+\subsection{时间复杂度}
+
+$$
+O(n^3)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^3)
+$$
+
+\section{\href{https://vjudge.net/problem/URAL-2057}{【ural 2057】Non-palindromic cutting}}
+
+\subsection{题目大意}
+
+给定一个长度为 $n$ 的字符串 $S$
+
+将 $S$ 划分为若干段非空连续子串，使得每段都不是回文串
+
+求最多能划分成多少段
+
+\subsection{算法讨论}
+
+设 $f_i$ 表示 $s_{1 \dots i}$ 的最大划分数，则有：
+
+$$
+f_i=\max(f_j)+1
+$$
+
+其中 $s_{j+1 \dots i}$ 是一个有解的字符串，即不是 $aaaaa, aabaa, ababa$ 的情况
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2817}{【ZJOI 2012】波浪}}
+
+\subsection{题目大意}
+
+考虑 $1 \sim n$ 的一个排列 $a_1,a_2,\dots,a_n$，定义它的波浪值为：
+
+$$
+\sum_{i=1}^{n-1} |a_i-a_{i+1}|
+$$
+
+给定 $m$，求有多少排列的波浪值不小于 $m$，其中 $n \le 100$
+
+\subsection{算法讨论}
+
+考虑从小到大的顺序依次插入 $1 \sim n$，设 $f_{i,j,k,l}$ 表示现在要插入 $i$，已经有了 $j$ 个极大连续块，此时的贡献和为 $k$，有 $l$ 个边界被碰触了
+
+对于绝对值符号，可以拆为：
+
+$$
+|a-b|=\max(a,b)-\min(a,b)
+$$
+
+考虑如下几种转移：
+
+\textbf{1. 放在两侧，不和任何已有的极大连续块相邻}
+
+此时的方案数为 $2-l$，且有贡献为 $-i$
+
+\textbf{2. 放在两侧，和某个极大连续块相邻}
+
+此时的方案数为 $2-l$，且有贡献为 $i$
+
+\textbf{3. 合并两个已存在的极大连续块}
+
+此时的方案数为 $j-1$，且有贡献为 $2i$
+
+\textbf{4. 独自成为一个极大连续块}
+
+此时方案数为 $j+1-l$，且有贡献 $-2i$
+
+\textbf{5. 只和一个已存在的极大连续块相邻}
+
+此时方案数为 $2j-l$，且有贡献 $i-i=0$
+
+\subsection{时间复杂度}
+
+$$
+O(n^4)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^3)
+$$
+
+\end{document}

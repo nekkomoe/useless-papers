@@ -1054,4 +1054,1331 @@ $$
 O(n^3)
 $$
 
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1594}{【51nod 1594】Gcd and Phi}}
+
+\subsection{题目大意}
+
+给定 $n(n \le 2 \times 10^6)$，求：
+
+$$
+\sum_{i=1}^{n}\sum_{j=1}^{n}\phi(\gcd(\phi(i),\phi(j)))
+$$
+
+\subsection{算法讨论}
+
+设 $f(d)$ 为：
+
+$$
+f(d)=\sum_{i=1}^{n}\sum_{j=1}^{n}[d | \phi(i)][d | \phi(j)]=\left(\sum_{i=1}^{n}[d | \phi(i)]\right)^2
+$$
+
+设 $g(d)$ 为：
+
+$$
+g(d)=\sum_{i=1}^{n}\sum_{j=1}^{n}[d = \gcd(\phi(i), \phi(j))]
+$$
+
+则有：
+
+$$
+g = f \times \mu
+$$
+
+同时答案为：
+
+$$
+\sum_{i=1}^{n}\phi(i)g(i)
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1301}{【51nod 1301】集合异或和}}
+
+\subsection{题目大意}
+
+给定 $n,m(1 \le n,m \le 2000)$，构造两个不可重整数集 $X,Y$，满足 $\oplus X < \oplus Y$，且 $\forall x \in X,1 \le x \le n$，且 $\forall y \in Y,1 \le y \le n$
+
+求有多少种构造方案，两种方案不同当且仅当 $(X,Y)$ 至少一个不同
+
+\subsection{算法讨论}
+
+考虑 $a<b$ 的条件，即二进制下有一段相同的前缀，然后在某一位处 $a$ 为 $0$，且 $b$ 为 $1$
+
+那么可以枚举这一位 $l$，然后设 $f_{i, j, t}$ 表示考虑完 $1 \sim i$，此时 $(\oplus X) \oplus (\oplus Y)=j$，同时 $\oplus Y$ 的二进制下第 $l$ 位为 $t$ 的方案数
+
+那么如果 $\oplus X$ 和 $\oplus Y$ 在第 $l$ 位不同，那么方案数为：
+
+$$
+\sum_{i=2^l}^{2^{l+1}-1}f_{\max(n,m), i, 1}
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n^2 \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1577}{【51nod 1577】异或凑数}}
+
+\subsection{题目大意}
+
+给定 $n(n \le 5 \times 10^5)$ 个整数 $a_1 \sim a_n(0 < a_i < 2^{30})$
+
+有 $m(m \le 5 \times 10^5)$ 次询问，每次给定 $l, r, k(0 < k < 2^{30})$，判断是否可以从 $a_l \sim a_r$ 中选择一些数，使得它们的异或和为 $k$
+
+\subsection{算法讨论}
+
+枚举右端点，考虑维护 $w$ 个线性无关的数，使得从高位往低位这些数的存在位置尽可能靠右
+
+\subsection{时间复杂度}
+
+$$
+O(n \log a_i)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n \log a_i)
+$$
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1312}{【51nod 1312】最大异或和}}
+
+\subsection{题目大意}
+
+给定 $n$ 个整数 $a_1 \sim a_n(0 \le a_i \le 10^{15})$，每次可以选择一对 $(i,j)$，且 $i \not= j$，设 $x=a_i \oplus a_j, y=a_j$，之后让 $a_i=x,a_j=y$
+
+可以随便操作，最大化 $\sum_{i=1}^{n}a_i$ 的值
+
+\subsection{算法讨论}
+
+考虑提取这个集合的一个线性基，则除了这个线性基外，其它整数一定可以变为这个空间下的最大值，线性基中的某一个也可以
+
+于是只需要最小化这个线性基的和即可，直接高斯消元求出来的线性基可以保证对于每一个 $1$ 的位，是取得该位置的最小值
+
+还有另外一种求法，就是先求出线性基后，每个线性基异或上所有位数比它小的那些
+
+\subsection{时间复杂度}
+
+$$
+O(n \log a_i)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log a_i)
+$$
+
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1479}{【51nod 1479】小Y的数论题}}
+\subsection{题目大意}
+
+给定三个两两互质的数 $a, b, c(1 \le a, b, c \le 10^9)$，以及另一个数 $m(3 \le m \le 10^9)$
+
+求三个 $(0, m)$ 范围内的整数 $x, y, z$，使得 $x^a+y^b \equiv z^c \pmod {m}$
+
+\subsection{算法讨论}
+
+如果 $m = 2^k$，则可以分类讨论：
+
+\textbf{1. a=b=c=1}
+
+$$
+\begin{cases}
+x=1 \\
+y=1 \\
+z=2
+\end{cases}
+$$
+
+\textbf{2. a>1}
+
+$$
+\begin{cases}
+x=\frac{m}{2} \\
+y=1 \\
+z=1
+\end{cases}
+$$
+
+\textbf{3. b>1}
+
+$$
+\begin{cases}
+x=1 \\
+y=\frac{m}{2} \\
+z=1
+\end{cases}
+$$
+
+\textbf{4. c>1}
+
+$$
+\begin{cases}
+x=\frac{m}{2} \\
+y=\frac{m}{2} \\
+z=\frac{m}{2}
+\end{cases}
+$$
+
+如果 $m \not= 2^k$，则有：
+
+$$
+\begin{cases}
+x=2^{bk} \\
+y=2^{ak} \\
+z=2^{l}
+\end{cases}
+$$
+
+可以推出：$abk+1=cl$，只需要 $exgcd$ 解出一组即可
+
+\subsection{时间复杂度}
+
+$$
+O(\log m)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(1)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2844}{【bzoj 2844】albus就是要第一个出场}}
+
+\subsection{题目大意}
+
+给定一个可重集 $S$，将它所有子集的异或和都求出来后，从小到大排序，求数字 $x$ 的排名
+
+其中 $|S| \le 10^5$，所有元素的值不超过 $10^9$
+
+\subsection{算法讨论}
+
+设 $T$ 为这个异或空间内所能组成的数字的集合，设 $f(x)$ 表示这个异或空间组成 $x$ 的方案数
+
+则有 $f(x)=2^{n-|B|}$，其中 $B$ 表示线性基的大小
+
+于是可以从低位往高位贪心，算出小于 $x$ 的不同数字个数，然后乘以 $2^{n-|B|}$ 后加一就是 $x$ 的排名
+
+\subsection{时间复杂度}
+
+$$
+O(\log x)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log x)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2460}{【BJWC 2011】元素}}
+
+\subsection{题目大意}
+
+给定 $n(1 \le n \le 1000)$ 个物品，每个物品有两个属性 $(id,w)(id \le 10^{18},w \le 10^4)$，要求选出一些物品，使得 $\oplus id \not= 0$，最大化 $\sum w$
+
+\subsection{算法讨论}
+
+按照 $w$ 从大到小排序后，判断每次是否可以插入当前的 $id$，如果可以插入就累加入答案
+
+\subsection{时间复杂度}
+
+$$
+O(n (\log n + \log id))
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log id)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=3105}{【CQOI 2013】新Nim游戏}}
+
+\subsection{题目大意}
+
+传统的 $Nim$ 游戏是这样的：有一些火柴堆，每堆都有若干根火柴（不同堆的火柴数量可以不同），两个游戏者轮流操作，每次可以选一个火柴堆拿走若干根火柴，可以只拿一根，也可以拿走整堆火柴，但不能同时从超过一堆火柴中拿，拿走最后一根火柴的游戏者胜利
+
+本题的游戏稍微有些不同：在第一个回合中，第一个游戏者可以直接拿走若干个整堆的火柴，可以一堆都不拿，但不可以全部拿走，第二回合也一样，第二个游戏者也有这样一次机会，从第三个回合（又轮到第一个游戏者）开始，规则和 $Nim$ 游戏一样
+
+如果你先拿，怎样才能保证获胜？如果可以获胜的话，还要让第一回合拿的火柴总数尽量小
+
+火柴堆数不超过 $100$，每堆的火柴个数不超过 $10^9$
+
+\subsection{算法讨论}
+
+为了先手必胜，那么剩下的火柴一定可以全部插入线性基，否则如果有剩余的，则这个数字在插入的时候会变为 $0$，后手只需要保留这些变为 $0$ 的即可
+
+为了使得总数最小，于是可以从大到小排序，依次插入
+
+\subsection{时间复杂度}
+
+$$
+O(n (\log n + \log a_i))
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+\log a_i)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=4347}{【POI 2016】Nim z utrudnieniem
+}}
+
+\subsection{题目大意}
+
+$A$ 和 $B$ 两个人玩游戏，一共有 $m$ 颗石子，$A$ 把它们分成了 $n$ 堆，每堆石子数分别为 $a_1,a_2 \dots, a_n$
+
+每轮可以选择一堆石子，取掉任意颗石子，但不能不取，谁先不能操作，谁就输了
+
+在游戏开始前，$B$ 可以扔掉若干堆石子，但是必须保证扔掉的堆数是 $d$ 的倍数，且不能扔掉所有石子
+
+$A$ 先手，请问 $B$ 有多少种扔的方式，使得 $B$ 能够获胜，输出对 $10^9+7$ 取模
+
+其中 $1 \le n \le 5 \times 10^5, 1 \le d \le 10,1 \le a_i \le 10^6, \sum a_i \le 10^7$
+
+\subsection{算法讨论}
+
+设 $f_{i, j, k}$ 表示处理完前 $i$ 堆石子，选择了 $j \bmod d$ 堆，选择的石子的异或和为 $k$ 的方案数，那么答案为 $f_{n,0,\oplus a_i}-[d | n]$
+
+考虑到 $a \oplus b \le 2 \max(a,b)$，于是可以先从小到大排序，然后依次考虑每一个 $a_i$，此时它只会更新不超过 $2 \times a_i$ 个位置上的值，于是时间复杂度为 $O(md)$
+
+\subsection{时间复杂度}
+
+$$
+O(md)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(md)
+$$
+
+\section{\href{http://acm.hdu.edu.cn/showproblem.php?pid=6166}{【hdu 6166】Senior Pan}}
+
+\subsection{题目大意}
+
+给定一张有非负边权的有向图 $G(2 \le |G| \le 10^5)$，以及一个关键点集 $K(2 \le |K| \le n)$，最小化 $\text{dis}(u,v)$，其中 $u,v \in K$ 且 $u \not= v$
+
+\subsection{算法讨论}
+
+考虑一个弱化版的问题：给定两个点集 $A,B$，最小化 $\text{dis}(u,v)$，其中 $u \in A,v \in B$
+
+做法就是新建两个点 $S,T$，把 $S$ 连向所有 $A$ 中的点，同时把所有 $B$ 中的点连向 $T$，之后跑 $S$ 到 $T$ 的最短路
+
+那么这道题也可以同样的做法，按照二进制的某一位是否为 $0$ 进行分类，然后跑这个弱化版的问题即可，显然任何一个关键点对都会至少有一次被分到两边
+
+当然也可以直接随机分类，假设答案点对为 $(u,v)$，那么随机一次后会有 $0.5$ 的概率是分到同一边，多随机几次后至少一次分到两边的概率就很高了
+
+\subsection{时间复杂度}
+
+$$
+O(n \log^2 n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/724/G}{【codeforces 724G】Xor-matic Number of the Graph}}
+
+\subsection{题目大意}
+
+给定有非负边权的无向图 $G(|G| \le 10^5)$，如果一个三元组 $(u,v,w)$ 满足 $1 \le u < v \le n$，且存在一条从 $u$ 到 $v$ 的路径，使得依次经过的边权的异或和为 $w$，那么这个三元组是好的
+
+求所有好的三元组的 $w$ 的值之和，答案模 $10^9+7$
+
+\subsection{算法讨论}
+
+按位考虑有多少个 $(u,v,w)$ 满足 $w$ 二进制下存在第 $k$ 位，然后方案数乘 $2^k$ 后累加就行了
+
+具体做法就是 $dfs$ 后把所有环都放入线性基，然后考虑线性基中是否有一个有 $k$ 这一位
+
+\subsection{时间复杂度}
+
+$$
+O(n \log w^2)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log w)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/939/D}{【codeforces 939D】Love Rescue}}
+
+\subsection{题目大意}
+
+给定两个字符串 $s,t(|s|=|t| \le 10^5$，每次可以选择两个字符 $c_1,c_2$，然后把所有的 $c_1$ 都变成 $c_2$
+
+\subsection{算法讨论}
+
+考虑模拟题意，从左往右依次枚举 $s_i,t_i$，如果不相等就说明要把它们合并到一块，用并查集维护这个过程
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://zhixincode.com/contest/24/problem/A?problem_id=349}{【CCPC-Wannafly Winter Camp Day7 (Div1, onsite)】迷宫}}
+
+\subsection{题目大意}
+
+有一个 $n(n \le 10^5)$ 个点 $n-1$ 条边的无向连通图迷宫，其中有些点上面有人
+
+现在所有人的目标都是逃离这个迷宫，而迷宫的出口是 $1$ 号点，每一时刻，会依次发生以下的事情：
+
+\begin{quotation}
+1. 在点 $x$ 上的人选择一个点 $f(x)$ 作为目标，要求 $f(x)$ 必须是 $x$，或者与 $x$ 有边相连的点，且对于 $x\neq y$，有 $f(x)\neq f(y)$
+
+2. 在点 $x$ 上的人移动到 $f(x)$
+
+3. 在点 $1$ 号点上的人成功逃脱，从这个游戏里消失
+\end{quotation}
+
+现在你需要求的是：让所有人都成功逃脱至少需要多少时间
+
+\subsection{算法讨论}
+
+考虑将操作翻转，即所有人从 $1$ 开始往目标点行走
+
+此时除了 $1$ 以外，其它点每时每刻至多只有 $1$ 个人
+
+此时所有人不会在 $1$ 以外的点处停止，也就是每时每刻都在往目标点行走
+
+记 $f(x)$ 表示目标距离大于等于 $x$ 的点的个数，那么答案就是：
+
+$$
+\max\{\text{dis}(i)+f(\text{dis}(i))-1\}
+$$
+
+意思就是，对于一个最后走的，距离为 $x$ 的人，他需要等待其他所有距离不比他近的人先走
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://zhixincode.com/contest/2/problem/C?problem_id=25}{【CCPC-Wannafly Winter Camp Day1 (Div1, onsite)】拆拆拆数}}
+
+\subsection{题目大意}
+
+读入 $A$ 和 $B$，需要把 $A$ 拆成 $a_1, a_2, \dots, a_n$，把 $B$ 拆成 $b_1, b_2, \dots, b_n$，满足：
+
+\begin{quotation}
+1. $\forall 1 \leq i \leq n,$，有 $a_i, b_i \geq 2$ 且 $gcd(a_i, b_i) = 1$
+
+2. $\sum_{i=1}^{n}{a_i} = A, \sum_{i=1}^{n}{b_i} = B$
+\end{quotation}
+
+如果有多组满足条件的 $a$ 和 $b$，请输出 $n$ 最小的任意一组即可
+
+如果无解，请输出 $−1$
+
+\subsection{算法讨论}
+
+首先如果 $\gcd(A,B)=1$，那么显然直接输出就行了
+
+否则断言 $n=2$，且 $\min(a_1,a_2) \le C,\min(b_1,b_2) \le C$，其中 $C$ 为某一常数，断言 $C=10$
+
+\subsection{时间复杂度}
+
+$$
+O(1)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(1)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2616}{【bzoj 2616】SPOJ PERIODNI}}
+
+\subsection{题目大意}
+
+有 $n$ 个 $1 \times h_i$ 的矩形小棋盘，底边边长为 $1$，在一条直线上拼成了一个畸形的棋盘
+
+高度 $h_i$ 给出，第 $i$ 个矩形的高度为 $h_i$
+
+若两个车相互攻击仅当它们在同一列，或在同一行且在这一行它们之间棋盘格子都是存在的
+
+现在要在这棋盘上放置恰好 $k$ 个互相不攻击的车，问有多少种方案
+
+其中 $n \le 500,k \le 500,h_i \le 10^6$，答案模 $10^9+7$
+
+\subsection{算法讨论}
+
+建立笛卡尔树后，每个节点表示一个矩形，宽为 $h_i-h_{fa_i}$，长为该节点的子树大小
+
+那么放置车的时候，无非是在子树中放一些，然后再在当前节点的矩形中放一些
+
+在子树中放是：
+
+$$
+g_{u,i}=\sum_{k}f_{lc,k} f_{rc,j-k}
+$$
+
+然后处理当且节点中放一些车：
+
+$$
+f_{u,j}=\sum_{k} g_{u,j-k} {width-(j-k) \choose k} {height \choose k}k!
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n^3)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^2)
+$$
+
+\section{\href{https://zhixincode.com/contest/2/problem/H?problem_id=30}{【CCPC-Wannafly Winter Camp Day1 (Div1, onsite)】我爱割葱}}
+
+\subsection{题目大意}
+
+由于太肝了，$wls$ 现在很割葱
+
+假设葱一共有 $n$ 棵，第 $i$ 棵葱的高度为 $a_i$
+
+$wls$ 一共要割最多 $k$ 刀葱，每刀可以在某一高度割去连续一段葱
+
+以高度 $h$ 在区间 $[l, r]$ 割一刀葱是合法的，当且仅当区间里的葱的高度都不小于 $h$
+
+此时，这个区间中的葱小于等于 $h$ 的未被割的部分都会被割掉
+
+下面的葱被割掉以后，上面的葱不会掉下来
+
+请问，$k$ 刀以后，割掉的葱的总长度的最大值是多少？
+
+其中 $1 \le n, k \le 100, 1 \le a_i \le 10^6$
+
+\subsection{算法讨论}
+
+一个比较直观的想法是，建立笛卡尔树后考虑树上 $dp$
+
+设 $f_{i,j,k}$ 表示以 $i$ 为根的子树，一共割了 $j$ 刀，且下表面占了 $k$ 个格子时的最大收益
+
+转移十分显然，但粗略分析时间复杂度的话是 $O(n^5)$ 的，如果转移的时候只枚举到了子树大小，那么时间复杂度就降为了 $O(n^3)$
+
+\subsection{时间复杂度}
+
+$$
+O(n^3)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n^3)
+$$
+
+\section{\href{https://vjudge.net/problem/Kattis-scaffolding}{【 ICPC 2016 Hong Kong】G. Scaffolding}}
+
+\subsection{题目大意}
+
+你要搭一个一共 $n(n \le 10^5)$ 列的脚手架，第 $i$ 列放 $h_i$ 根竹子。
+
+你每次只能搬 $m$ 根竹子上脚手架，并且只能在脚手架左右和向上移动
+
+同时如果左边右边和上面没有竹子，也可以放一根竹子在那里，问最少需要多少次搬完
+
+\subsection{算法讨论}
+
+考虑操作翻转过来，变为每次拆一些竹子，先把笛卡尔树搞出来
+
+设 $f_u$ 表示拆完以 $u$ 为根的子树的最少次数，$g_u$ 表示在最少次数的前提下，还能顺便拆多少
+
+转移就直接贪心的能拿就拿即可
+
+\subsection{时间复杂度}
+
+$$
+O(n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1766}{【51nod 1766】树上的最远点对}}
+
+\subsection{题目大意}
+
+$n$ 个点被 $n-1$ 条边连接成了一颗树，给出 $a \sim b$ 和 $c \sim d$ 两个区间，表示点的标号请你求出两个区间内各选一点之间的最大距离，即你需要求出 $\max\{\text{dis}(i,j) |a \le i \le b, c \le j \le d\}$
+
+其中 $n \le 10^5$，树的边权都是正整数
+
+\subsection{算法讨论}
+
+首先树上的一个点集的最远点对的距离，等价于这个点集构成的虚树的直径，在边权都是正整数的情况下，对于两个点集 $A,B$，假设它们的某个最远点对分别为 $(p_A,q_A),(p_B,q_B)$，那么 $A \cup B$ 的最远点对在 $p_A,q_A,p_B,q_B$ 中任意选两个的组合之中
+
+于是可以线段树维护区间的任意的一个可行点对，注意查询距离的时候会用到 $lca$，这个需要单次 $O(1)$ 查询
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\section{\href{https://www.zhixincode.com/contest/8/problem/G?problem_id=128}{【CCPC-Wannafly Winter Camp Day2 (Div2, onsite)】Linear Congruential Generator}}
+
+\subsection{题目大意}
+
+给定一个递归定义的生成器，其满足的递归关系为：
+
+$$
+x_{n + 1} = ((a x_n + c) \bmod m)
+$$
+
+这里 $x$ 是生成的伪随机数序列，而 $m, a, c, x_0$ 则是定义这个生成器所给出的整数常量。
+
+另外，两个整数区间 $[l_1, r_1]$ 和 $[l_2, r_2]$ 也被指定，请你计算下面这个式子的值：
+
+$$
+\sum_{i = l_1}^{r_1}\sum_{j = l_2}^{r_2}{(x_i \bmod (x_j + 1))}
+$$
+
+一共 $T$ 组数据，保证 $1 \le T \le 10^5,1 \le m \le 10^6, 0 \le a, c, x_0 < m, 0 \le l_1 \le r_1  \le 10^5, 0 \le l_2 \le r_2 \le 10^5,\sum m \le 2 \times 10^6$
+
+\subsection{算法讨论}
+
+看到取模不太方便操作，先化简一下式子：
+
+$$
+\begin{aligned}
+&\sum_{i=l_1}^{r_1}\sum_{j=l_2}^{r_2} \left(x_i \bmod (x_j+1)\right) \\
+=&\sum_{i=l_1}^{r_1}\sum_{j=l_2}^{r_2} \left(x_i-\left\lfloor \frac{x_i}{x_j+1} \right\rfloor (x_j+1)\right) \\
+=&\left(\sum_{i=l_1}^{r_1}\sum_{j=l_2}^{r_2} x_i\right)-\left(\sum_{i=l_1}^{r_1}\sum_{j=l_2}^{r_2}\left\lfloor \frac{x_i}{x_j+1} \right\rfloor (x_j+1)\right) \\
+\end{aligned}
+$$
+
+熟悉那预处理出所有可能的 $x_i$，这个最多只有 $O(m)$ 种，而且是一个 $\rho$ 状分布的
+
+前半部分直接计算就好，后半部分可以枚举 $a=\left\lfloor \frac{x_i}{x_j+1} \right\rfloor,b=x_j+1$，然后统计有多少个 $x_i$ 就行了，即 $x_i \in [ab,(a+1)b-1]$，通过调和级数可得知，时间复杂度为 $O(m \log m)$
+
+\subsection{时间复杂度}
+
+$$
+O(m \log m)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(m)
+$$
+
+\section{\href{http://www.51nod.com/Challenge/Problem.html?problemId=1753}{【51nod 1753】相似子串}}
+
+\subsection{题目大意}
+
+两个字符串相似定义为：
+
+\begin{quotation}
+1. 两个字符串长度相等
+
+2. 两个字符串对应位置上有且仅有至多一个位置所对应的字符不相同
+\end{quotation}
+
+给定一个字符串 $s$，每次询问两个子串在给定的规则下是否相似
+
+给定的规则指每次给出一些等价关系，如 $a=b,b=c$ 等
+
+注意这里的等价关系具有传递性，即若 $a=b,b=c \Rightarrow a=c$
+
+\subsection{算法讨论}
+
+用并查集把相同的字符合并起来，哈希维护每种字符是否出现的哈希值，然后就可以进行普通的哈希判断了
+
+\subsection{时间复杂度}
+
+$$
+O((|s| + T) \Sigma \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(|s| \sigma)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/167/D}{【codeforces 167D】 Wizards and Roads}}
+
+\subsection{题目大意}
+
+给定 $n(1 \le 10^5)$ 个随机生成的点，并以某种方式连边，之后 $q(q \le 10^5)$ 次询问 $x$ 在 $[l,r]$ 的所有点的最大匹配
+
+\subsection{算法讨论}
+
+结论：每个点会向在它左右下方的 $y$ 值最大的点连边，之后会成为一棵二叉树，每次询问一个子树的最大匹配
+
+然后就直接暴力连边后，类似于线段树一样的区间查询就行了
+
+\subsection{时间复杂度}
+
+$$
+O((q + n) \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/855/C}{【codeforces 855C】Helga Hufflepuff's Cup}}
+
+\subsection{题目大意}
+
+给出一棵 $n(1 \le n \le 10^5)$ 个节点的树，有 $m(1 \le m \le 10^9)$ 种颜色，第 $k(1 \le k \le m)$ 种颜色是特殊颜色，树上最多有 $x(1 \le x \le 10)$ 个特殊颜色点
+
+你需要把整个树染色，且保证特殊颜色节点以下条件： 
+
+\begin{quotation}
+
+1. 与其相连的不能有特殊颜色节点
+
+2. 与其相连的节点的颜色序号必须小于 $k$
+	
+\end{quotation}
+
+问有多少种满足要求的树，答案模 $10^9+7$
+
+\subsection{算法讨论}
+
+设 $f_{i, j, 0/1/2}$ 表示以 $i$ 为根的子树中，一共有 $j$ 个特殊颜色的节点，其中 $i$ 号节点的颜色小于或等于或大于 $k$，然后暴力转移即可
+
+\subsection{时间复杂度}
+
+$$
+O(nx^2)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(nx)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/1045/A}{【codeforces 1045A】Last chance}}
+
+\subsection{题目大意}
+
+有 $n$ 个敌方飞船，己方有 $m$ 个武器，有以下三种类型：
+
+\begin{quotation}
+
+1. 能攻击编号属于一个大小为 $k_i$ 的集合的所有飞船
+
+2. 能攻击编号在 $[l_i,r_i]$ 区间内的所有飞船
+
+3. 能攻击三个飞船，编号分别为 $a_i, b_i, c_i$
+
+\end{quotation}
+
+其中，前两种类型的武器每个只能攻击 $1$ 个飞船，第三种每个只能使用 $0$ 次或 $2$ 次
+
+特别性质：每个飞船最多会被一个第三种武器纳入攻击范围
+
+在每个飞船只能被攻击一次的情况下，问最多能攻击到多少个飞船，并输出方案
+
+其中 $n,m \le 5000, \sum k_i \le 10^5$
+
+\subsection{算法讨论}
+
+对于第一种，直接暴力连边，对于第二种，线段树优化建图
+
+对于第三种，首先把所有三元组缩成一个点，然后每个第三种会对答案产生 $+2$ 的贡献
+
+\subsection{时间复杂度}
+
+$$
+O((\sum k_i + n \log m) \sqrt {n+m \log m})
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\sum k_i + (n + m) \log m)
+$$
+
+\section{\href{https://atcoder.jp/contests/agc006/tasks/agc006_c}{【Atcoder Grand Contest 006C】Rabbit Exercise}}
+
+\subsection{题目大意}
+
+数轴上有 $n$ 个点，从 $1$ 到 $n$ 编号，有 $m$ 个操作，每次操作给出一个编号 $a_i(1<a_i<n)$，即把点 $a_i$ 等概率移动到它关于点 $a_i−1$ 的对称点或关于点 $a_i+1$ 的对称点
+
+记顺序执行这 $m$ 个操作为完成 $1$ 次，问完成 $k$ 次后，所有点的坐标的期望值是多少
+
+其中 $3 \le n \le 10^5,x_i \in \mathbb{Z},|x_i| \le 10^9,1 \le m \le 10^5,2 \le a_j \le n-1,1 \le k \le 10^{18}$
+
+\subsection{算法讨论}
+
+首先点 $i$ 被操作后的期望位置是：
+
+$$
+E(x_i)=\frac{1}{2}\left(2x_{i-1}-x_i\right)+\frac{1}{2}\left(2x_{i+1}-x_i\right)=x_{i-1}+x_{i+1}-x_{i}
+$$
+
+如果原先有五个位置 $x_1, x_2, x_3, x_4, x_5$，那么如果操作了一次 $x_3$，则会变为 $x_1, x_2, x_2+x_4-x_3, x_4, x_5$
+
+考虑差分一下，那么就相当于从 $x_1, x_2-x_1, x_3-x_2, x_4-x_3, x_5-x_4$ 变成了 $x_1, x_2-x_1, x_4-x_3, x_3-x_2, x_5$，也就是交换了相邻两个位置
+
+那么将 $x_i$ 差分，设 $y_i=x_i-x_{i-1}$，那么如果操作 $x_i$，实际上就是交换了 $y_i, y_{i+1}$
+
+那么一次完整的操作就相当于按照顺序进行了一些交换，也就是乘以了一个置换
+
+那么现在只需要求这个置换的 $k$ 次就行了，找出所有的环后每个环走上 $k$ 次就行了
+
+\subsection{时间复杂度}
+
+$$
+O(n+m)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+m)
+$$
+
+\section{\href{https://agc002.contest.atcoder.jp/tasks/agc002_d}{【Atcoder Grand Contest 002D】Stamp Rally}}
+
+\subsection{题目大意}
+
+给出一个 $n(1 \le n \le 10^5)$ 个点 $m(1 \le m \le 10^5)$ 条边的无向图，$q(1 \le q \le 10^5)$ 次询问，每次询问给出两个点 $(x, y)$，求包含 $x, y$ 的总大小为 $z$ 的联通块（可能 $x, y$ 不在一个连通块中），使得连通块中的边的序号最大值尽可能小
+
+\subsection{算法讨论}
+
+考虑整体二分，由于修改在询问之前，所以每一层实际上是修改和询问的交替块，于是可以按照 $bfs$ 的顺序进行整体二分
+
+\subsection{时间复杂度}
+
+$$
+O((n+q) \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+q)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=4870}{【SHOI 2017】组合数问题}}
+
+\subsection{题目大意}
+
+给定四个整数 $n, p, k, r$，求 $\sum_{i=0}^{\infty}{nk \choose ik+r} \bmod p$
+
+其中 $1 \le n \le 10^9, 0 \le r < k \le 50, 2 \le p \le 2^{30}-1$
+
+\subsection{算法讨论}
+
+考虑组合意义，相当于从 $nk$ 个物品中，挑出模 $k$ 等于 $r$ 个物品的方案数
+
+则可以设 $f_{i,j}$ 表示前 $i$ 个物品，挑出模 $k$ 等于 $j$ 个物品的方案数，然后矩阵乘法就行了
+
+\subsection{时间复杂度}
+
+$$
+O(k^3 \log (nk))
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(k^2)
+$$
+
+\section{\href{http://uoj.ac/problem/275}{【清华集训 2016】组合数问题}}
+
+\subsection{题目大意}
+
+求如果给定 $n,m$ 和 $k$，对于所有的 $0 \le i \le n, 0 \le j \le \min(i, m)$，有多少对 $(i, j)$ 满足 ${i \choose j}$ 是 $k$ 的倍数
+
+答案对 $10^9+7$ 取模，其中 $1 \le n,m \le 10^{18}, 1 \le k \le 100$，且 $k$ 是个质数
+
+\subsection{算法讨论}
+
+考虑卢卡斯定理：
+
+$$
+{n \choose m} \equiv {n \bmod p \choose m \bmod p} {\lfloor\frac{n}{p} \rfloor \choose \lfloor \frac{m}{p} \rfloor} \pmod {p}
+$$
+
+即如果把 $n, m$ 都写成 $p$ 进制的数，也就是：
+
+$$
+\begin{cases}
+&n = \sum_{i=0}^{t} n_i \times p^i \\
+&m = \sum_{i=0}^{t} m_i \times p^i \\
+\end{cases}
+$$
+
+则有：
+
+$$
+{n \choose m} \equiv \prod_{i=0}^{t} {n_i \choose m_i} \pmod {p}
+$$
+
+那么如果 ${n \choose m} \equiv 0 \pmod {k}$，则相当于 $k$ 进制下 $n$ 的某一位比 $m$ 的对应位小
+
+回到这道题，相当于统计有多少个 $i, j$，满足 $0 \le j \le i \le n$ 且 $j \le m$ 的 $i, j$ 个数，满足 $j$ 的对应位至少有一位比 $i$ 大
+
+一个比较暴力的 $dp$ 是，$f_{L,0/1,0/1,0/1,0/1}$ 表示考虑完长度为 $L$ 的前缀，$i$ 是否顶上 $n$，$j$ 是否顶上 $m$，之前是否存在一位使得 $j$ 大于 $i$
+
+然而这个转移太复杂了，不好写，不妨考虑容斥，即只计算所有 $j \le i$，且 $j$ 的每一位都不超过 $i$ 的合法对数，然后总的对数减去这些就行了
+
+首先把 $m$ 变为 $\min(n,m)$，然后总的对数是：
+
+$$
+\begin{aligned}
+  &\sum_{i=0}^{n}\sum_{j=0}^{\min(i,m)} 1 \\
+= &\left(\sum_{i=0}^{m}\sum_{j=0}^{i} 1\right)+\left(\sum_{i=m+1}^{n}\sum_{j=0}^{m}1\right) \\
+= &\left(\sum_{i=0}^{m}i+1\right)+(m+1)(n-m) \\
+= &\frac{(1+m)m}{2}+m+1+(m+1)(n-m) \\
+= &\frac{(1+m)m}{2}+(m+1)(n-m+1) \\
+\end{aligned}
+$$
+
+之后设 $f_{L,0/1,0/1}$，表示考虑完长度为 $L$ 的前缀，$i$ 是否顶上 $n$，$j$ 是否顶上 $m$，且 $j$ 的每一位都不能大于 $i$，满足这些条件的合法的 $(i,j)$ 的对数
+
+然后减一下就行了，注意要先取模，因为 $n,m \le 10^{18}$
+
+\subsection{时间复杂度}
+
+$$
+O(k^2 \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log n)
+$$
+
+\section{\href{http://uoj.ac/problem/300}{【CTSC 2017】吉夫特}}
+
+\subsection{题目大意}
+
+给定一个长度为 $n$ 的数列 $a_i$ ，求有多少个长度不小于 $2$ 的子序列 $a_{b_1},a_{b_2}, \dots ,a_{b_k}$，满足：
+
+$$
+\prod_{i=2}^{k} {a_{b_{i-1}} \choose a_{b_{i}}} \equiv 1 \pmod{2}
+$$
+
+其中 $1 \le n \le 211985, a_i \le 233333$，保证 $a_i$ 互不相同
+
+\subsection{算法讨论}
+
+根据卢卡斯定理，可以得知这个序列应该满足二进制下 $a_{b_i} \subseteq a_{b_{i-1}}$
+
+由于 $a_i$ 互不相同，直接暴力的时间复杂度为 $O(3^{18})$，由于 $uoj$ 跑的很快所以就跑过去了
+
+为了简便起见，把 $a$ 先 $reverse$ 一下，之后变为 $a_{b_{i-1}} \subseteq a_{b_i}$ 的问题
+
+考虑均衡一下暴力的复杂度，设 $f_{s,t}$ 表示前 $9$ 位为 $s$，后 $9$ 位为 $t$ 的子集的数字结尾的方案数
+
+那么转移的时候可以先枚举前 $9$ 位的子集来统计答案，更新的时候就可以枚举后 $9$ 位的超集来更新状态
+
+\subsection{时间复杂度}
+
+$$
+O(n \times 2^9)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(2^{18})
+$$
+
+\section{\href{http://192.168.14.17/problem/629}{【EXNR 1C】两开花}}
+
+\subsection{题目大意}
+
+给定一棵大小为 $n$ 的有根树，设 $f_k$ 表示随机选择 $k$ 个不同的点所构成的虚树的大小，求 $f_k$ 的期望值
+
+要求对于所有 $1 \le k \le m$ 的 $f_k$ 都计算，答案模 $998244353$，保证 $1 \le m \le n \le 4 \times 10^5$
+
+\subsection{算法讨论}
+
+大体思路：由于是线性计数，所以只需要考虑每个点会被算多少次就行了
+
+那么一个点如果对答案有贡献，要么它是一个关键点，要么它的两个不同子树中各有一个关键点
+
+设 $a_i$ 表示 $i$ 的子树大小，如果随机选 $k$ 个点的话，那么贡献如下：
+
+\textbf{选了}
+
+如果一个点 $u$ 选了，那么一定会产生一次贡献，至于被算了多少次就乘以组合数就好了
+
+$$
+\sum_{i=1}^{n}{n-1 \choose k-1}
+$$
+
+\textbf{没选}
+
+也就是至少有两个不同子树中都选了一个，剩下的无所谓，那么就可以大力容斥：子树中除了自己外至少选了一个的方案，减去不合法的，不合法就是只在一个子树中选择
+
+$$
+\sum_{i=1}^{n} \left(\sum_{x=1}^{k} {a_i-1 \choose x}{n-a_i \choose k-x}-\sum_{i \to j} \sum_{x=1}^{k}{a_j \choose x}{n-a_i \choose k-x} \right)
+$$
+
+那么要计算 $f_k$ 了：
+
+$$
+\begin{aligned}
+f_k
+=&\sum_{i=1}^{n}{n-1 \choose k-1}+\sum_{i=1}^{n} \left(\sum_{x=1}^{k} {a_i-1 \choose x}{n-a_i \choose k-x}-\sum_{i \to j} \sum_{x=1}^{k}{a_j \choose x}{n-a_i \choose k-x} \right) \\
+=& n{n-1 \choose k-1}
+   +\sum_{i=1}^{n}\sum_{x=1}^{k} {a_i-1 \choose x}{n-a_i \choose k-x}
+   -\sum_{j=2}^{n}\sum_{x=1}^{k}{a_j \choose x}{n-a_{fa_j} \choose k-x}
+\end{aligned}
+$$
+
+设：
+
+$$
+\begin{cases}
+b_i=a_i-1 \\
+c_i=n-a_i \\
+d_i=n-a_{fa_i} \\
+e_i=c_i+d_i
+\end{cases}
+$$
+
+则原式为：
+
+$$
+f_k=n {n-1 \choose k-1}+\sum_{i=1}^{n}\sum_{x=1}^{k} {b_i \choose x} {c_i \choose k-x}-\sum_{i=2}^{n}\sum_{x=1}^{k}{a_i \choose x}{d_i \choose k-x}
+$$
+
+\textbf{左面}
+
+直接暴力就行了
+
+\textbf{中间}
+
+$$
+\begin{aligned}
+g_k
+&=\sum_{i=1}^{n}\sum_{x=1}^{k}{b_i \choose x}{c_i \choose k-x} \\
+&=\sum_{i=1}^{n}{b_i+c_i \choose k}-{b_i \choose 0} {c_i \choose k} \\
+&=\sum_{i=1}^{n}{n-1 \choose k}-{c_i \choose k} \\
+&=n{n-1 \choose k}-\left(\sum_{i=1}^{n} {c_i \choose k}\right) \\
+&=n{n-1 \choose k}-\left(\sum_{i=1}^{n} {n-a_i \choose k}\right) \\
+\end{aligned}
+$$
+
+\textbf{右面}
+
+$$
+\begin{aligned}
+h_k
+= &\sum_{i=2}^{n}\sum_{x=1}^{k}{a_i \choose x}{d_i \choose k-x} \\
+= &\sum_{i=2}^{n}{n+a_i-a_{fa_i} \choose k}-{n-a_{fa_i} \choose k} \\
+\end{aligned}
+$$
+
+至此可以发现只需要计算下面这个东西就行了：
+
+$$
+\begin{aligned}
+p_k
+=&\sum_{i=1}^{n}{a_i \choose k} \\
+\end{aligned}
+$$
+
+设 $c_k=\sum_{i=1}^{n}[a_i=k]$
+
+$$
+\begin{aligned}
+p_k
+= &\sum_{i \in V} {v \choose k}c_v \\
+= &\sum_{i \in V} \frac{v!}{k!(v-k)!}c_v
+\end{aligned}
+$$
+
+注意到可行的 $a_i$ 范围是 $0 \le a_i \le 2n$，也就是说：
+
+$$
+\begin{aligned}
+k!p_k
+=&\sum_{i=0}^{2n}i!c_i\frac{1}{(i-k)!} \\
+=&\sum_{i=0}^{2n}i!c_i\frac{1}{(i-k)!}
+\end{aligned}
+$$
+
+设 $X_i=i!c_i,Y_i=(2n-i)!,Z_k=k!p_k$，则：
+
+$$
+Z_k=\sum_{i=0}^{2n}X_iY_{2n-i+k}
+$$
+
+令 $\forall t > 2n,X_{t}=0$，则有：
+
+$$
+\begin{aligned}
+Z_{2n+k}
+=&\sum_{i=0}^{2n+k}X_iY_{2n-i+k} \\
+=&\sum_{i+j=2n+k}X_iY_{j} \\
+\end{aligned}
+$$
+
+于是就是一个普通的卷积形式了
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\section{\href{https://codeforces.com/problemset/problem/1110/C}{【codeforces 1110C】Meaningless Operations}}
+
+\subsection{题目大意}
+
+定义函数 $f(a)$ 的值为：
+
+$$
+f(a)=\max_{0<b<a}\gcd(a\oplus b,a\ \&\ b)
+$$
+
+给出 $q$ 个询问，每个询问为一个整数 $a_i$，​你需要对于每个询问，求出 $f(a_i)$ 的值
+
+数据范围：$1\le q \le 1000, 2\le a_i\le 2^{25}-1$
+
+\subsection{算法讨论}
+
+一道十分巧妙的构造题
+
+首先 $\gcd(a, b) \le \min(a, b),a \& (a-t) \le a$
+
+考虑一个 $a$，那么可以把它的最高位及以下都取翻来得到 $b$，比如说如果 $a=(11010)_2$，那么 $b=(00101)_2$，这样 $\gcd(a \oplus b, a \& b)=\gcd(a \oplus b, 0)=\gcd(a \oplus b)$，且这个 $a \oplus b$ 是能达到的最大值了
+
+但是有一些例外，比如说 $b=0$，此时 $a=2^k-1$，那么可以直接打表得到这些 $a$ 对应的值就行了
+
+\subsection{时间复杂度}
+
+$$
+O(\log a)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(\log a)
+$$
+
+\section{\href{https://vjudge.net/problem/TopCoder-12118}{【Topcoder SRM550 DIV1 Hard】ConversionMachine}}
+
+\subsection{题目大意}
+
+给定两个字符串 $S,T$，保证只由 $c,a,t$ 三个字母组成，且 $|S|=|T|$，同时有三个变量 $c',a',t'$，每次可以选择一个 $S$ 中的字符 $p$，然后变为 $q$，有如下代价：
+
+\begin{quotation}
+
+1. $p=c, q=a$，代价是 $c'$
+
+2. $p=a, q=t$，代价是 $a'$
+
+3. $p=t, q=c$，代价是 $t'$
+
+\end{quotation}
+
+求有多少种操作方式，使得 $S$ 能变为 $T$，且代价之和不超过 $n$，两种方式不同当且仅当操作序列的长度不同，或者某一次操作的位置不同
+
+其中 $|S|=|T| \le 13, 1 \le c', a', t' \le 10^9, 0 \le n \le 10^9$
+
+\subsection{算法讨论}
+
+设 $L=|S|=|T|$，如果直接矩阵乘法的话，状态数是 $O(3^{L})$ 的，考虑压缩一些状态，发现每一个状态可以合并为 $(x, y, z)$，分别表示模 $3$ 余 $0, 1, 2$ 的位置的个数
+
+然后状态数就压缩到了 $O(L^3)$，于是可以直接矩阵快速幂来做了
+
+\subsection{时间复杂度}
+
+$$
+O(L^3 \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(L^2)
+$$
+
+\section{\href{https://lydsy.com/JudgeOnline/problem.php?id=4669}{【bzoj 4669】抢夺}}
+
+\subsection{题目大意}
+
+大战将至，$C$ 国决定实行计划经济
+
+$C$ 国西部总共有 $n$ 个城市，编号为 $0 \sim n-1$，以及 $m$ 条道路，道路是单向的
+
+其中城市 $0$ 是一个大城市，里面住着 $k$ 个人，而城市 $n-1$ 是一个农业城市
+
+现在所有城市 $0$ 的居民都需要到城市 $n-1$ 去领取食物
+
+由于担心体力不支，所以居民都会采取开车的形式出行
+
+但道路不是无限宽的，对于一条道路，会有 $c_i$ 的限制，表示在同一天内，最多只能有 $c_i$ 辆车同时在这条道路上行驶
+
+一条道路的长度为 $1$，每辆车的行驶速度也可以假定为 $1$ 每天
+
+城市 $n-1$ 会在每个居民都到达后马上开始发放食物
+
+现在板板想知道，假如在最优安排下，居民最早能在多少天后领到食物
+
+假如没有居民那就不需要发放食物，默认为第 $0$ 天
+
+\subsection{算法讨论}
+
+二分答案后费用流贪心判定
+
+那么为什么是对的……首先第一次增广之后，第二次增广的时候只能沿着第一次没有填满的那些地方走，因为第一次的增广是连续的，所以这么做是对的……
+
+\subsection{时间复杂度}
+
+$$
+O(nmf \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+m)
+$$
+
+\section{\href{https://agc005.contest.atcoder.jp/tasks/agc005_f}{【Atcoder Grand Contest 005F】Many Easy Problems}}
+
+\subsection{题目大意}
+
+给定一棵大小为 $n$ 的无根树，定义 $f(i)$，对于所有大小为 $i$ 的点集，求出能够包含它的最小连通块大小之和
+
+对于 $1 \le i \le n$ 的所有 $i$，求出 $f(i)$
+
+其中 $1 \le n \le 2 \times 10^5$，答案模 $924844033$
+
+\subsection{算法讨论}
+
+考虑贡献，假设一共选择 $k$ 个
+
+\textbf{选了}
+
+$$
+\sum_{i=1}^{n} {n-1 \choose k-1}
+$$
+
+\textbf{没选}
+
+$$
+\sum_{i=1}^{n}\sum_{x=1}^{k}{a_i-1 \choose x}{n-a_i \choose k-x}
+$$
+
+\textbf{算总账}
+
+$$
+\begin{aligned}
+f_k
+=&\sum_{i=1}^{n} {n-1 \choose k-1}+\sum_{i=1}^{n}\sum_{x=1}^{k}{a_i-1 \choose x}{n-a_i \choose k-x}-\sum_{i \to j} {a_j \choose k} \\
+=&n{n-1 \choose k-1}+\sum_{i=1}^{n} {n-1 \choose k}-{n-a_i \choose k} -\sum_{i=2}^{n} {a_i \choose k}  \\
+=&n \left({n-1 \choose k-1}+{n-1 \choose k}\right)-\sum_{i=1}^{n} {n-a_i \choose k}+ {a_i \choose k}[i \ge 2] \\
+=&n {n \choose k}-\sum_{i=1}^{n} {n-a_i \choose k} + {a_i \choose k} [i \ge 2] \\
+\end{aligned}
+$$
+
+\subsection{时间复杂度}
+
+$$
+O(n \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n)
+$$
+
+\section{\href{https://www.lydsy.com/JudgeOnline/problem.php?id=2006}{【NOI 2010】超级钢琴}}
+
+考虑把所有子串都表示出来，枚举右端点 $r$，那么左端点取值范围是 $[r-R+1,r-L+1]=[a, b]$，之后可以得到一个左端点，使得权值和最大，记这个值为 $sum$，那么可以用一个四元组来表示这些子串：$(sum, r, a, b)$
+
+之后每次找一个 $sum$ 最大的子串，并累加到答案上，之后删除这个四元组，并求得任意一个 $l$，使得 $[l, r]$ 取到最大权值且 $l$ 合法，然后新增两个四元组：$(sum_a, r, a, l-1)$ 和 $(sum_b, r, l + 1, b)$
+
+\subsection{时间复杂度}
+
+$$
+O((n+k) \log n)
+$$
+
+\subsection{空间复杂度}
+
+$$
+O(n+k)
+$$
+
+%\section{\href{}{}}
+%\subsection{题目大意}
+%\subsection{算法讨论}
+%\subsection{时间复杂度}
+%\subsection{空间复杂度}
+
 \end{document}

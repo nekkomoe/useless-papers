@@ -7,14 +7,6 @@
 */*.log
 */*.out
 */*.toc
-*/.texpadtmp
-<<<<<<< HEAD
-*/.synctex.gz
-
-/简要题解/*
+*/*.synctex.gz
 
 /hid/
-=======
-
-/ignore
->>>>>>> 38fda3cea15a5616435150e7a4aa82c22948fbf9

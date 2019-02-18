@@ -1,0 +1,158 @@
+%!TEX program = xelatex
+
+\documentclass[UTF8]{article}
+\author {sjzez czy}
+\title {带权二分学习笔记}
+\date{2019.2.14}
+\usepackage[UTF8]{ctex}
+
+\usepackage{pgf,tikz,pgfplots}
+\pgfplotsset{compat=1.15}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{abstract}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
+\renewcommand{\baselinestretch}{1.5}
+\geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
+\setmonofont{Consolas}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+    在一类最优化问题中，常有“恰好为 $k$ 个”之类的个数限制，如果直接通过动态规划解决的话，时间复杂度为 $O(nk)$ 左右，但在某些时候是可以根据函数的特殊性质降至 $O(n \log k)$
+    \newline
+    \centering
+    \textbf{关键字：} 带权二分、凸函数、斜率、动态规划
+\end{abstract}
+
+\tableofcontents
+
+\newpage
+
+\section{框架}
+
+设某个最优化模型如下：
+
+\begin{quotation}
+
+给定 $n$ 个物品，从中选择 $m$ 个物品使得收益最大
+
+\end{quotation}
+
+设 $g(x)$ 表示恰好选择 $x$ 个物品所得到的最大收益，目标是求出 $g(m)$，如果它是一个凸函数的话，则可以进行凸优化，为了简便起见，假设最优化的是最大收益，且 $g(x)$ 上凸
+
+那么可以得到 $g'(x)$ 是一个单调递减的函数，且 $g(x)$ 的最大值在 $g'(x)=0$ 处取到，假设这个值为 $x_0$
+
+那么可以二分一个权 $k$，表示每选择一个物品，那么会额外付出代价 $k$，构造函数 $f(x)=g(x)-kx$，由于 $g(x)$ 和 $-kx$ 都是凸的，因此 $f(x)$ 依旧是凸的，即 $f'(x)=0$ 的时候 $f(x)$ 取得最大值
+
+假设 $f(x)$ 在 $f'(x)=g'(x)-k=0 \Leftrightarrow g'(x)=k$ 的时候取得最大值，此时 $x$ 为 $x_1$
+
+由于 $g'(x)$ 是单调函数，所以随着 $k$ 的变化 $x_1$ 随着单调变化，即随着 $k$ 变小，$x_1$ 也会变大
+
+换而言之，实际上是用一条斜率为 $k$ 的直线来切这个 $g(x)$ 构成的凸包
+
+于是可以二分 $k$ 来得到 $x_1$，从而适当调整 $k$ 的取值
+
+\definecolor{zzttqq}{rgb}{0.6,0.2,0}
+\definecolor{xdxdff}{rgb}{0.49019607843137253,0.49019607843137253,1}
+\definecolor{ududff}{rgb}{0.30196078431372547,0.30196078431372547,1}
+\definecolor{uuuuuu}{rgb}{0.26666666666666666,0.26666666666666666,0.26666666666666666}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1cm,y=1cm]
+\begin{axis}[
+x=1cm,y=1cm,
+axis lines=middle,
+ymajorgrids=true,
+xmajorgrids=true,
+xmin=-3.1000000000000005,
+xmax=13.340000000000005,
+ymin=-4.710000000000002,
+ymax=9.150000000000004,
+xtick={-3,-2,...,13},
+ytick={-4,-3,...,9},]
+\clip(-3.1,-4.71) rectangle (13.34,9.15);
+\fill[line width=2pt,color=zzttqq,fill=zzttqq,fill opacity=0.10000000149011612] (0,0) -- (1,2) -- (2,3) -- (4,4) -- (7,3) -- (8,2) -- (9,0) -- cycle;
+\draw [line width=2pt,color=zzttqq] (0,0)-- (1,2);
+\draw [line width=2pt,color=zzttqq] (1,2)-- (2,3);
+\draw [line width=2pt,color=zzttqq] (2,3)-- (4,4);
+\draw [line width=2pt,color=zzttqq] (4,4)-- (7,3);
+\draw [line width=2pt,color=zzttqq] (7,3)-- (8,2);
+\draw [line width=2pt,color=zzttqq] (8,2)-- (9,0);
+\draw [line width=2pt,color=zzttqq] (9,0)-- (0,0);
+\begin{scriptsize}
+\draw [fill=uuuuuu] (0,0) circle (2pt);
+\draw[color=uuuuuu] (0.16,0.38) node {$A$};
+\draw [fill=ududff] (1,2) circle (2.5pt);
+\draw[color=ududff] (1.16,2.42) node {$B$};
+\draw [fill=ududff] (2,3) circle (2.5pt);
+\draw[color=ududff] (2.16,3.42) node {$C$};
+\draw [fill=ududff] (4,4) circle (2.5pt);
+\draw[color=ududff] (4.16,4.42) node {$E$};
+\draw [fill=ududff] (7,3) circle (2.5pt);
+\draw[color=ududff] (7.22,3.48) node {$H$};
+\draw [fill=ududff] (8,2) circle (2.5pt);
+\draw[color=ududff] (8.16,2.42) node {$I$};
+\draw [fill=xdxdff] (9,0) circle (2.5pt);
+\draw[color=xdxdff] (9.16,0.42) node {$J$};
+\draw[color=zzttqq] (0.86,1.1) node {$a$};
+\draw[color=zzttqq] (1.8,2.52) node {$b$};
+\draw[color=zzttqq] (3.22,3.46) node {$c$};
+\draw[color=zzttqq] (5.46,3.44) node {$d$};
+\draw[color=zzttqq] (7.34,2.52) node {$e$};
+\draw[color=zzttqq] (8.28,1.1) node {$f$};
+\draw[color=zzttqq] (4.56,0.56) node {$g$};
+\draw [fill=xdxdff] (2.996,3.498) circle (2.5pt);
+\draw[color=xdxdff] (3.16,3.92) node {$D$};
+\draw [fill=xdxdff] (4.993,3.669) circle (2.5pt);
+\draw[color=xdxdff] (5.16,4.1) node {$F$};
+\draw [fill=xdxdff] (6.007,3.331) circle (2.5pt);
+\draw[color=xdxdff] (6.22,3.82) node {$G$};
+\end{scriptsize}
+\end{axis}
+\end{tikzpicture}
+
+\section{模型 A}
+
+设某个最优化模型如下：
+
+\begin{quotation}
+
+给定 $n$ 个物品，从中选择 $m$ 个物品使得收益最大，其中 $g(x)$ 上凸
+
+\end{quotation}
+
+那么二分的 $k$ 的取值范围是 $(-\infty, \infty)$，在 $x_1 \le m$ 的时候记录 $k$，同时将 $k$ 往小调整，否则将 $k$ 往大调整
+
+输出答案的时候用最后一次记录的 $k$ 进行计算
+
+\section{模型 B}
+
+设某个最优化模型如下：
+
+\begin{quotation}
+
+给定 $n$ 个物品，从中选择 \textbf{最多} $m$ 个物品使得收益最大，其中 $g(x)$ 上凸
+
+\end{quotation}
+
+由于是“最多”的限制，因此不能再像之前一样设置二分边界了，此时应该设为 $[0, \infty)$
+
+此时当 $m \le x_0$ 的时候，最优解斜率在二分边界之内，因此可行，当 $m > x_0$ 的时候，最优解应在 $x=x_0$ 处取到，此时最优解的斜率为 $0$，依然在二分边界之内
+
+\section{例题}
+
+\href{https://www.luogu.org/problemnew/show/P1792}{种树 A}
+
+\href{https://www.luogu.org/problemnew/show/P1484}{种树 B}
+
+\end{document}

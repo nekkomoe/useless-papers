@@ -1,0 +1,162 @@
+%!TEX program = xelatex
+
+\documentclass[UTF8]{article}
+\author {sjzez czy}
+\title {单调队列优化多重背包}
+\date{2019.2.20}
+\usepackage[UTF8]{ctex}
+
+\usepackage{listings}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{abstract}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage[colorlinks,linkcolor=black,citecolor=black]{hyperref}
+\renewcommand{\baselinestretch}{1.5}
+\geometry{a4paper,left=2.7cm,right=2.7cm,top=2.7cm,bottom=2.7cm}
+\setmonofont{Consolas}
+
+\usepackage{xcolor}
+% 定义可能使用到的颜色
+\definecolor{CPPLight}  {HTML} {686868}
+\definecolor{CPPSteel}  {HTML} {888888}
+\definecolor{CPPDark}   {HTML} {262626}
+\definecolor{CPPBlue}   {HTML} {4172A3}
+\definecolor{CPPGreen}  {HTML} {487818}
+\definecolor{CPPBrown}  {HTML} {A07040}
+\definecolor{CPPRed}    {HTML} {AD4D3A}
+\definecolor{CPPViolet} {HTML} {7040A0}
+\definecolor{CPPGray}  {HTML} {B8B8B8}
+\lstset{
+    columns=fixed,
+    numbers=left,                                        % 在左侧显示行号
+    frame=none,                                          % 不显示背景边框
+    backgroundcolor=\color[RGB]{245,245,244},            % 设定背景颜色
+    keywordstyle=\color[RGB]{40,40,255},                 % 设定关键字颜色
+    numberstyle=\footnotesize\color{darkgray},           % 设定行号格式
+    commentstyle=\it\color[RGB]{0,96,96},                % 设置代码注释的格式
+    stringstyle=\rmfamily\slshape\color[RGB]{128,0,0},   % 设置字符串格式
+    showstringspaces=false,                              % 不显示字符串中的空格
+    language=c++,                                        % 设置语言
+    morekeywords={alignas,continute,friend,register,true,alignof,decltype,goto,
+    reinterpret_cast,try,asm,defult,if,return,typedef,auto,delete,inline,short,
+    typeid,bool,do,int,signed,typename,break,double,long,sizeof,union,case,
+    dynamic_cast,mutable,static,unsigned,catch,else,namespace,static_assert,using,
+    char,enum,new,static_cast,virtual,char16_t,char32_t,explict,noexcept,struct,
+    void,export,nullptr,switch,volatile,class,extern,operator,template,wchar_t,
+    const,false,private,this,while,constexpr,float,protected,thread_local,
+    const_cast,for,public,throw,std},
+}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\newpage
+
+\section{模型描述}
+
+有 $n$ 种物品，第 $i$ 种物品有 $c_i$ 个，每个价值为 $v_i$，单价 $w_i$
+
+现在有 $m$ 块钱，需要买价格之和不超过 $m$ 块钱的物品，使得价值之和最大
+
+\section{解法}
+
+设 $f_{i,j}$ 表示考虑了前 $i$ 种物品，还剩 $j$ 块钱的最大价值之和，有转移：
+
+$$
+f_{i,j}=\max_{k=0}^{c_i} \left(f_{i-1,j-k \cdot w_i}+ k \cdot v_i \right)
+$$
+
+考虑在模 $w_i$ 剩余系下做这个背包，即设 $j=a \cdot w_i+b$，有转移：
+
+$$
+f_{i,j}=\max_{k=0}^{c_i} \left( f_{i-1,(a-k)w_i+b} + k \cdot v_i \right)
+$$
+
+设 $t=a-k​$，有转移：
+
+$$
+\begin{aligned}
+f_{i,j}
+= & \max_{k=0}^{c_i} \left( f_{i-1,t \cdot w_i+b} + (a-t) \cdot v_i \right) \\
+= & \max_{k=0}^{c_i} \left( f_{i-1,t \cdot w_i+b} - t \cdot v_i \right) + a \cdot v_i\\
+\end{aligned}
+$$
+
+同时有约束：
+
+$$
+\begin{cases}
+a-t \ge 0 \\
+k \le c_i \Rightarrow k=a-t \le c_i
+\end{cases}
+$$
+
+即：
+
+$$
+a-c_i \le t \le a
+$$
+
+于是可以先枚举 $b$，然后枚举 $a$，最后单调队列枚举 $t$
+
+时间复杂度为 $O(nm)$
+
+\section{代码实现}
+
+\begin{lstlisting}[language=C++,numberstyle=\tiny,basicstyle=\ttfamily]
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+const int N = 110, M = 4e4 + 10, Q = 1e6 + 10;
+int f[N][M], n, m;
+int que[Q], l, r, que_val[Q];
+void add(int pos, int value, int weight, int count) {
+    for(int b = 0 ; b <= min(m, weight - 1) ; ++ b) {
+        l = 1, r = 0;
+        for(int a = 0, t = 0 - count ; a * weight + b <= m ; ++ a) {
+            // t in [a - count, a]
+            int j = a * weight + b;
+            while(l <= r && que[l] < a - count) ++ l;
+            while(t <= a) {
+                if(t * weight + b >= 0) {
+                    int val = f[pos - 1][t * weight + b] - t * value;
+                    while(l <= r && que_val[r] <= val) -- r;
+                    ++ r;
+                    que[r] = t;
+                    que_val[r] = val;
+                }
+                ++ t;
+            }
+            if(l <= r) {
+                f[pos][j] = max(f[pos][j], que_val[l] + a * value);
+            }
+        }
+    }
+    for(int j = 0 ; j < m ; ++ j) {
+        assert(f[pos][j] <= f[pos][j + 1]);
+    }
+}
+int main() {
+    cin >> n >> m;
+    for(int i = 1 ; i <= n ; ++ i) {
+        int v, w, c;
+        cin >> v >> w >> c;
+        add(i, v, w, c);
+    }
+    cout << f[n][m] << endl;
+}    
+\end{lstlisting}
+
+\section{参考资料}
+
+\href{https://blog.csdn.net/lvzelong2014/article/details/79594011}{lvzelong2014《bzoj4182: Shopping 树上多重背包+点分治》}
+
+\end{document}

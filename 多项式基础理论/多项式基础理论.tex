@@ -504,4 +504,119 @@ $$
 y=\left(e^{-\int (1-n)P(x)dx} \left( C + \int (1-n)Q(x) e^{\int (1-n)P(x)dx} dx \right)\right)^{\frac{1}{1-n}}
 $$
 
+\section{黎卡提方程}
+
+\subsection{形式}
+
+$$
+\frac{dy}{dx} = P(x)y^2+Q(x)y+R(x)
+$$
+
+一般形式暂时没有通用解法，但对于一些特殊形式还是可以解出来的
+
+\subsection{$P(x),Q(x),R(x)$ 中至少两个同时为 $0$}
+
+无非以下三种，均为 \textbf{变量分离方程}：
+
+$$
+\begin{aligned}
+& \frac{dy}{dx} = P(x)y^2 \Rightarrow y^2dy=P(x)x \\
+& \frac{dy}{dx} = Q(x)y \Rightarrow \frac{dy}{y}=Q(x)dx \\
+& \frac{dy}{dx} = R(x) dy=R(x)dx \\
+\end{aligned}
+$$
+
+\subsection{$\frac{dy}{dx} = Q(x)y+R(x)$}
+
+退化为 \textbf{一阶线性方程}：
+
+$$
+\frac{dy}{dx} = Q(x)y+R(x)
+$$
+
+\subsection{$\frac{dy}{dx} = P(x)y^2+Q(x)y$}
+
+退化为 \textbf{伯努利方程}：
+
+$$
+\frac{dy}{dx} = P(x)y^2+Q(x)y
+$$
+
+\subsection{$\frac{dy}{dx} + ay^2 = bx^m$}
+
+需要保证：
+
+$$
+\begin{cases}
+& a \not= 0 \\
+& x \not= 0 \\
+& y \not= 0 \\
+& m = 0, -2, \frac{ -4k }{ 2k+1 }, \frac{ -4k }{ 2k-1 } ( k = 1, 2, \cdots ) \\
+\end{cases}
+$$
+
+令 $x_1=ax$，则原式可以规约为 $\frac{dy}{dx} + y^2=bx^m$
+
+当 $m=0$ 时，有：
+
+$$
+\begin{aligned}
+& \frac{dy}{dx} + y^2 = b \\
+\Rightarrow & \frac{dy}{dx} = b - y^2 \\
+\Rightarrow & \frac{dy}{b-y^2} = dx \\
+\Rightarrow & \int \frac{dy}{b-y^2} = C + x \\
+\end{aligned}
+$$
+
+当 $m = -2$ 时，设 $z = xy$，有：
+
+$$
+\begin{cases}
+& y=\frac{z}{x} \\
+& \frac{dz}{dx} = \frac{ydx+xdy}{dx} = y + x\frac{dy}{dx} \\
+\end{cases}
+$$
+
+于是有：
+
+$$
+\begin{aligned}
+\frac{dz}{dx}
+= & y + x\left(-y^2 + \frac{b}{x^2}\right) \\
+= & \frac{z}{x} - \frac{z^2}{x} + \frac{b}{x} \\
+= & \frac{b + z - z^2}{x} \\
+\end{aligned}
+$$
+
+可以得到：
+
+$$
+\begin{aligned}
+& \frac{dz}{b + z - z^2} = x dx \\
+\Rightarrow & \int \frac{dz}{b + z - z^2} = C + \frac{x^2}{2} \\
+\end{aligned}
+$$
+
+\subsection{$\frac{dy}{dx} + ay^2 = \frac{1}{x}y + \frac{b}{x^2}$}
+
+设 $z=xy$，则 $y=\frac{z}{x}$，于是有：
+
+$$
+\begin{aligned}
+& \frac{dy}{dx} + ay^2 = \frac{1}{x}y + \frac{b}{x^2} \\
+\Rightarrow
+& \frac{1}{x} \left(\frac{dz}{dx} - \frac{z}{x}\right) + a\frac{z^2}{x^2} = \frac{z}{x^2} + \frac{b}{x^2} \\
+\Rightarrow
+& \frac{1}{x} \frac{dz}{dx} = \frac{z}{x^2} - a\frac{z^2}{x^2} + \frac{z}{x^2} + \frac{b}{x^2} \\
+\Rightarrow
+& \frac{1}{x} \frac{dz}{dx} = \frac{2z - z^2 + b}{x^2} \\
+\Rightarrow
+& \int \frac{dz}{2z - x^2 + b} = C + \int \frac{xdx}{x^2} \\
+\end{aligned}
+$$
+
+\section{参考文献}
+
+\href{https://wenku.baidu.com/view/4b24054a16fc700abb68fc62.html}{黎卡提方程的初等解法}
+
 \end{document}

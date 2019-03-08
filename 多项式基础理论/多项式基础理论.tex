@@ -222,7 +222,7 @@ $$
 
 设 $f(x)=A_r(x)X_r(x)+B_r(x)$，则 $\forall x \in X_r,f(x)=B_r(x)$
 
-换句话说，可以求得 $B_l(x)=f(x) \bmod A_l(x)$，然后递归处理 $[l,\lfloor \frac{n}{2} \rfloor]$，右区间同理
+换句话说，可以求得 $B_l(x)=f(x) \bmod X_l(x)$，然后递归处理 $[l,\lfloor \frac{n}{2} \rfloor]$，右区间同理
 
 在到达 $l=r$ 的时候，只剩下常数项，可以直接求值
 
